@@ -1,0 +1,38 @@
+services:
+  master:
+    build:
+      context: .
+      dockerfile: .docker/master.dockerfile
+    container_name: ansible_master
+    volumes:
+      - ./ansible/config/ansible.cfg:/etc/ansible/ansible.cfg
+      - ./ansible/playground/:/ansible/
+
+  prod:
+    build:
+      context: .
+      dockerfile: .docker/vm.dockerfile
+    command: tail -f /dev/null
+    volumes:
+      - prod:/home
+
+  dev:
+    build:
+      context: .
+      dockerfile: .docker/vm.dockerfile
+    command: tail -f /dev/null
+    volumes:
+      - prod:/home
+
+  qa:
+    build:
+      context: .
+      dockerfile: .docker/vm.dockerfile
+    command: tail -f /dev/null
+    volumes:
+      - qa:/home
+
+volumes:
+  prod:
+  dev:
+  qa:
