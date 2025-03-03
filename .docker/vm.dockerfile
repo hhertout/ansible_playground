@@ -20,13 +20,13 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Créer un utilisateur avec sudo pour les opérations Ansible
-RUN useradd -m ansible-user && \
-    echo "ansible-user ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/ansible-user
+# Create ansible user
+RUN useradd -m ansible-user
 
-# Configurer SSH pour permettre les connexions Ansible
+# SSH configuration
 RUN mkdir -p /var/run/sshd
 RUN echo 'root:password' | chpasswd
+RUN echo 'ansible-user:ansible' | chpasswd
 RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
 # SSH login fix

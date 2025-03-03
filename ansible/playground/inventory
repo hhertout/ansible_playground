@@ -1,0 +1,4 @@
+[ubuntu]
+prod ansible_user=root ansible_password=password
+dev ansible_user=root ansible_password=password
+qa ansible_user=root ansible_password=password
