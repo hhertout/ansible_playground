@@ -22,7 +22,7 @@ services:
       dockerfile: .docker/vm.dockerfile
     command: tail -f /dev/null
     volumes:
-      - prod:/home
+      - dev:/home
 
   qa:
     build:

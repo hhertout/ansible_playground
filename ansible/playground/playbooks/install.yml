@@ -1,0 +1,18 @@
+---
+- hosts: all
+  become: True
+
+  pre_tasks:
+    - name: Check if docker is already installed
+      ansible.builtin.command: "docker -v"
+      register: docker_exists
+      ignore_errors: true
+
+    - name: Stdout Docker --version"
+      ansible.builtin.debug:
+        var: docker_exists.stdout
+      when: docker_exists.stdout is defined
+
+  roles:
+    - role: install_docker
+      when: docker_exists.rc != 0

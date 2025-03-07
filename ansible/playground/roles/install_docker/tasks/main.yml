@@ -1,0 +1,14 @@
+# Install Docker on different Linux distributions
+# -------------------------------------------
+---
+- name: Get distro
+  ansible.builtin.debug:
+    var: ansible_facts['distribution']
+
+- name: Install Docker on Ubuntu
+  include_tasks: ubuntu.yml
+  when: ansible_facts['distribution'] == 'Ubuntu'
+
+- name: Install Docker on Debian
+  include_tasks: debian.yml
+  when: ansible_facts['distribution'] == 'Debian'
