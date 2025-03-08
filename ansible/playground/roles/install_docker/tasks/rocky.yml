@@ -20,6 +20,11 @@
 - name: Add Docker repository for RHEL - Rocky
   ansible.builtin.command: dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
 
+- name: Install bridge utils
+  ansible.builtin.dnf:
+    name: bridge-utils
+    state: latest
+
 - name: Install Docker
   ansible.builtin.dnf:
     name:
@@ -38,11 +43,3 @@
   ansible.builtin.debug:
     msg: "{{ docker_version.stdout }}"
   failed_when: docker_version.rc != 0
-
-- name: Start Docker
-  ansible.builtin.systemd_service:
-    name: docker
-    state: started
-    enabled: yes
-  # Failed on docker image - To disable in production
-  ignore_errors: true

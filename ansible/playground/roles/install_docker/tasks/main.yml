@@ -16,3 +16,6 @@
 - name: Install Docker on Rocky
   include_tasks: rocky.yml
   when: ansible_facts['distribution'] == 'Rocky' or ansible_facts['distribution'] == 'RedHat'
+
+- name: Start Docker Deamon
+  include_tasks: service.yml

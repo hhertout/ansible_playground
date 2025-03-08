@@ -1,0 +1,8 @@
+---
+- name: Start Docker
+  ansible.builtin.systemd_service:
+    name: docker
+    state: started
+    enabled: yes
+  # Failed on docker image - To disable in production
+  ignore_errors: true
