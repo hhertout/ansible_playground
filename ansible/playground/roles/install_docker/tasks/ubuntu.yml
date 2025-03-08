@@ -57,4 +57,13 @@
   register: docker_version
 
 - debug:
-    var: docker_version.stdout
+    msg: "{{ docker_version.stdout }}"
+  failed_when: docker_version.rc != 0
+
+- name: Start Docker
+  ansible.builtin.systemd_service:
+    name: docker
+    state: started
+    enabled: yes
+  # Failed on docker image - To disable in production
+  ignore_errors: true
