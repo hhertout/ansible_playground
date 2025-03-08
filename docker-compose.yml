@@ -11,23 +11,23 @@ services:
   prod:
     build:
       context: .
-      dockerfile: .docker/ubuntu.dockerfile
-    command: tail -f /dev/null
+      dockerfile: .docker/rocky.dockerfile
+    # command: tail -f /dev/null
     volumes:
       - prod:/home
 
   dev:
     build:
       context: .
-      dockerfile: .docker/rocky.dockerfile
-    # command: tail -f /dev/null
+      dockerfile: .docker/ubuntu.dockerfile
+    command: tail -f /dev/null
     volumes:
       - dev:/home
 
   qa:
     build:
       context: .
-      dockerfile: .docker/debian.dockerfile
+      dockerfile: .docker/ubuntu.dockerfile
     command: tail -f /dev/null
     volumes:
       - qa:/home
