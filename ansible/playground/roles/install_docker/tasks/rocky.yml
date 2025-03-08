@@ -1,0 +1,47 @@
+- name: Clean up
+  ansible.builtin.dnf:
+    name:
+      - docker-client
+      - docker-client-latest
+      - docker-common
+      - docker-latest
+      - docker-latest-logrotate
+      - docker-logrotate
+      - docker-engine
+      - podman
+      - runc
+    state: absent
+
+- name: Install prerequisites
+  ansible.builtin.dnf:
+    name: dnf-plugins-core
+    state: latest
+
+- name: Add Docker repository for RHEL - Rocky
+  ansible.builtin.command: dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
+
+- name: Install Docker
+  ansible.builtin.dnf:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: latest
+
+- name: Start Docker
+  ansible.builtin.systemd_service:
+    name: docker
+    state: started
+    enabled: yes
+  ignore_errors: true # Failed on docker image - To disable in production
+
+- name: Check Install
+  ansible.builtin.command: docker --version
+  register: docker_version
+
+- name: Print Docker Version
+  ansible.builtin.debug:
+    msg: "{{ docker_version.stdout }}"
+  failed_when: docker_version.rc != 0

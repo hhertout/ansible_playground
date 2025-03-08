@@ -12,3 +12,7 @@
 - name: Install Docker on Debian
   include_tasks: debian.yml
   when: ansible_facts['distribution'] == 'Debian'
+
+- name: Install Docker on Rocky
+  include_tasks: rocky.yml
+  when: ansible_facts['distribution'] == 'Rocky' or ansible_facts['distribution'] == 'RedHat'
