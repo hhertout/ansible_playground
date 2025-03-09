@@ -14,7 +14,5 @@
       when: docker_exists.stdout is defined
 
   roles:
-    - role: install_tooling
-
     - role: install_docker
       when: docker_exists.rc != 0

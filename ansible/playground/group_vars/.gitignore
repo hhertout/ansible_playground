@@ -1,0 +1,4 @@
+# in production mod, ignore all files
+
+# *
+!.gitignore

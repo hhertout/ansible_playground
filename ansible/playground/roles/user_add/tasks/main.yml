@@ -1,0 +1,20 @@
+- name: Create sudo group
+  ansible.builtin.group:
+    name: sudo
+    state: present
+  when: create_sudo_group | default(false)
+
+- name: Configure sudo group
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    line: "%sudo ALL=(ALL) ALL"
+    validate: "visudo -cf %s"
+  when: create_sudo_group | default(false)
+
+- name: Add user
+  ansible.builtin.user:
+    name: "{{ user }}"
+    state: present
+    groups: "{{ user_groups }}"
+    append: yes
+    password: "{{ user_password | password_hash('sha512') }}"

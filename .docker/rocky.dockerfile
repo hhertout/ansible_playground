@@ -12,13 +12,10 @@ RUN dnf install -y \
     initscripts \
     && dnf clean all
 
-# Create ansible user
-RUN useradd -m ansible-user
 
 # SSH configuration
 RUN mkdir -p /var/run/sshd
 RUN echo 'root:password' | chpasswd
-RUN echo 'ansible-user:ansible' | chpasswd
 RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 RUN sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/' /etc/ssh/sshd_config
 

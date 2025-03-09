@@ -56,6 +56,9 @@ RUN chmod 600 /home/ansible/.ssh/config
 
 USER root
 
+# Install passlib for Ansible Vault
+RUN pip install passlib
+
 # Install Starship Prompt
 RUN mkdir /root/.config
 RUN touch /root/.config/starship.toml

@@ -1,13 +1,15 @@
-- name: Remove conflicting curl-minimal package
+- name: Install curl
   ansible.builtin.package:
-    name: curl-minimal
-    state: absent
-  when: ansible_facts['distribution'] == 'Rocky' or ansible_facts['distribution'] == 'RedHat'
+    name: curl
+    state: latest
+    when: ansible_facts['distribution'] != 'Rocky' or ansible_facts['distribution'] != 'RedHat'
 
-- name: "Install tooling"
+- name: Install git
   ansible.builtin.package:
-    pkg:
-      - curl
-      - git
-      - net-tools
+    name: git
+    state: latest
+
+- name: Install net-tools
+  ansible.builtin.package:
+    name: net-tools
     state: latest
