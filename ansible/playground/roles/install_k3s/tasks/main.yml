@@ -1,8 +1,8 @@
 ---
 - name: Install on Rocky
   include_tasks: rocky.yml
-  when: ansible_facts['distribution'] == 'Rocky' or ansible_facts['distribution'] == 'RedHat'
+  when: ansible_distribution == 'Rocky' or ansible_distribution == 'RedHat'
 
 - name: Install on Ubuntu & Debian
   include_tasks: ubuntu.yml
-  when: ansible_facts['distribution'] == 'Ubuntu' or ansible_facts['distribution'] == 'Debian'
+  when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'

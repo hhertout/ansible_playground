@@ -20,7 +20,7 @@
     mode: "0755"
   register: docker_gpg_result_ubuntu
   ignore_errors: true
-  when: ansible_facts['distribution'] == 'Ubuntu'
+  when: ansible_distribution == 'Ubuntu'
 
 - name: Download the docker package
   ansible.builtin.uri:
@@ -29,17 +29,17 @@
     mode: "0755"
   register: docker_gpg_result_debian
   ignore_errors: true
-  when: ansible_facts['distribution'] == 'Debian'
+  when: ansible_distribution == 'Debian'
 
 - name: Check if the download was successful for Ubuntu
   ansible.builtin.fail:
     msg: "Failed to download the docker gpg key for Ubuntu"
-  when: ansible_facts['distribution'] == 'Ubuntu' and docker_gpg_result_ubuntu.status != 200 and docker_gpg_result_ubuntu.status != 304
+  when: ansible_distribution == 'Ubuntu' and docker_gpg_result_ubuntu.status != 200 and docker_gpg_result_ubuntu.status != 304
 
 - name: Check if the download was successful for Debian
   ansible.builtin.fail:
     msg: "Failed to download the docker gpg key for Debian"
-  when: ansible_facts['distribution'] == 'Debian' and docker_gpg_result_debian.status != 200 and docker_gpg_result_debian.status != 304
+  when: ansible_distribution == 'Debian' and docker_gpg_result_debian.status != 200 and docker_gpg_result_debian.status != 304
 
 - name: Changing permissions
   ansible.builtin.file:
@@ -51,14 +51,14 @@
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] {{ registry_docker_debian }} \
     $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
     sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-  when: ansible_facts['distribution'] == 'Debian'
+  when: ansible_distribution == 'Debian'
 
 - name: Add the docker repository
   ansible.builtin.shell: |
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] {{ registry_docker_ubuntu }} \
     $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
     sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-  when: ansible_facts['distribution'] == 'Ubuntu'
+  when: ansible_distribution == 'Ubuntu'
 
 - name: Update Apt with the docker registry
   ansible.builtin.apt:

@@ -1,8 +1,13 @@
 ---
-- name: Start dockerd
-  ansible.builtin.systemd_service:
+- name: Start docker daemon
+  ansible.builtin.systemd:
     name: docker
     state: started
     enabled: yes
-  # Failed on docker image - To disable in production
-  ignore_errors: "{{ install_on_docker }}"
+  ignore_errors: "{{ install_on_docker | default(false) }}"
+
+- name: Stop docker daemon
+  ansible.builtin.systemd:
+    name: docker
+    state: stopped
+  ignore_errors: "{{ install_on_docker | default(false) }}"
