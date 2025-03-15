@@ -1,1 +1,8 @@
 install_on_docker: true
+
+registry_docker_ubuntu: https://download.docker.com/linux/ubuntu
+registry_docker_debian: https://download.docker.com/linux/debian
+registry_docker_rocky: https://download.docker.com/linux/rhel/docker-ce.repo
+
+docker_package_url_ubuntu: https://download.docker.com/linux/ubuntu/gpg
+docker_package_url_debian: https://download.docker.com/linux/debian/gpg

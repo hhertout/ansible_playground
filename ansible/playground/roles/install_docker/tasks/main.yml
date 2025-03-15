@@ -13,12 +13,8 @@
     var: ansible_facts['distribution']
 
 - name: Install Docker on Ubuntu
-  include_tasks: ubuntu.yml
-  when: ansible_facts['distribution'] == 'Ubuntu'
-
-- name: Install Docker on Debian
   include_tasks: debian.yml
-  when: ansible_facts['distribution'] == 'Debian'
+  when: ansible_facts['distribution'] == 'Ubuntu' or ansible_facts['distribution'] == 'Debian'
 
 - name: Install Docker on Rocky
   include_tasks: rocky.yml

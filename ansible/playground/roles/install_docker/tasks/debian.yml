@@ -15,16 +15,31 @@
 
 - name: Download the docker package
   ansible.builtin.uri:
-    url: "https://download.docker.com/linux/debian/gpg"
+    url: "{{ docker_package_url_ubuntu }}"
     dest: "/etc/apt/keyrings/docker.asc"
     mode: "0755"
-  register: docker_gpg_result
+  register: docker_gpg_result_ubuntu
   ignore_errors: true
+  when: ansible_facts['distribution'] == 'Ubuntu'
 
-- name: Check if the download was successful
+- name: Download the docker package
+  ansible.builtin.uri:
+    url: "{{ docker_package_url_debian }}"
+    dest: "/etc/apt/keyrings/docker.asc"
+    mode: "0755"
+  register: docker_gpg_result_debian
+  ignore_errors: true
+  when: ansible_facts['distribution'] == 'Debian'
+
+- name: Check if the download was successful for Ubuntu
   ansible.builtin.fail:
-    msg: "Failed to download the docker gpg key"
-  when: docker_gpg_result.failed and docker_gpg_result.status != 304
+    msg: "Failed to download the docker gpg key for Ubuntu"
+  when: ansible_facts['distribution'] == 'Ubuntu' and docker_gpg_result_ubuntu.status != 200 and docker_gpg_result_ubuntu.status != 304
+
+- name: Check if the download was successful for Debian
+  ansible.builtin.fail:
+    msg: "Failed to download the docker gpg key for Debian"
+  when: ansible_facts['distribution'] == 'Debian' and docker_gpg_result_debian.status != 200 and docker_gpg_result_debian.status != 304
 
 - name: Changing permissions
   ansible.builtin.file:
@@ -33,10 +48,17 @@
 
 - name: Add the docker repository
   ansible.builtin.shell: |
-    echo \
-    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] {{ registry_docker_debian }} \
     $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
     sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  when: ansible_facts['distribution'] == 'Debian'
+
+- name: Add the docker repository
+  ansible.builtin.shell: |
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] {{ registry_docker_ubuntu }} \
+    $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
+    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  when: ansible_facts['distribution'] == 'Ubuntu'
 
 - name: Update Apt with the docker registry
   ansible.builtin.apt:
@@ -51,9 +73,10 @@
       - containerd.io
       - docker-buildx-plugin
       - docker-compose-plugin
+    state: latest
 
 - name: Test installation
-  ansible.builtin.command: "docker -v"
+  ansible.builtin.command: "docker --version"
   register: docker_version
 
 - debug:

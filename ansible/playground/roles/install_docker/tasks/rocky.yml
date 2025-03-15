@@ -18,7 +18,7 @@
     state: latest
 
 - name: Add Docker repository for RHEL - Rocky
-  ansible.builtin.command: dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
+  ansible.builtin.command: dnf config-manager --add-repo {{ registry_docker_rocky }}
 
 - name: Install Docker
   ansible.builtin.dnf:
