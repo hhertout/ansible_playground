@@ -5,4 +5,4 @@
     state: started
     enabled: yes
   # Failed on docker image - To disable in production
-  ignore_errors: true
+  ignore_errors: "{{ install_on_docker }}"
