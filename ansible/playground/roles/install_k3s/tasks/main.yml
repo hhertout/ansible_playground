@@ -6,7 +6,3 @@
 - name: Install on Ubuntu & Debian
   include_tasks: ubuntu.yml
   when: ansible_facts['distribution'] == 'Ubuntu' or ansible_facts['distribution'] == 'Debian'
-
-- name: Uninstall k3s
-  include_tasks: uninstall.yml
-  when: k3s_uninstall is defined

@@ -15,5 +15,3 @@
   roles:
     - role: uninstall_k3s
       when: k3s_exists.rc == 0 # If k3s is already installed, then uninstall it
-      vars:
-        k3s_uninstall: true
