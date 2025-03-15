@@ -1,0 +1,19 @@
+---
+- hosts: all
+  become: True
+
+  pre_tasks:
+    - name: Check if k3s is already installed
+      ansible.builtin.command: "k3s --version"
+      register: k3s_exists
+      ignore_errors: true
+
+    - name: Stdout k3s --version"
+      ansible.builtin.debug:
+        var: k3s_exists.stdout
+
+  roles:
+    - role: uninstall_k3s
+      when: k3s_exists.rc == 0 # If k3s is already installed, then uninstall it
+      vars:
+        k3s_uninstall: true

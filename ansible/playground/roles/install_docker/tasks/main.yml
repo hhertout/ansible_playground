@@ -1,5 +1,12 @@
 # Install Docker on different Linux distributions
 # -------------------------------------------
+# This playbook installs Docker on different Linux distributions.
+# The playbook uses the when conditional statement to install Docker on Ubuntu, Debian, and Rocky Linux.
+# -------------------------------------------
+# The playbook includes the tasks for each distribution in separate files.
+# The playbook also includes a notify directive to start the Docker service after installation.
+# The playbook uses the ansible_facts['distribution'] variable to get the distribution of the target host.
+# The playbook uses the ansible.builtin.debug module to display the distribution of the target host.
 ---
 - name: Get distro
   ansible.builtin.debug:
@@ -16,6 +23,3 @@
 - name: Install Docker on Rocky
   include_tasks: rocky.yml
   when: ansible_facts['distribution'] == 'Rocky' or ansible_facts['distribution'] == 'RedHat'
-
-- name: Start Docker Deamon
-  include_tasks: service.yml

@@ -13,6 +13,7 @@ services:
       context: .
       dockerfile: .docker/rocky.dockerfile
     # command: tail -f /dev/null
+    privileged: true
     volumes:
       - prod:/home
 
@@ -21,6 +22,7 @@ services:
       context: .
       dockerfile: .docker/ubuntu.dockerfile
     command: tail -f /dev/null
+    privileged: true
     volumes:
       - dev:/home
 
@@ -29,6 +31,7 @@ services:
       context: .
       dockerfile: .docker/ubuntu.dockerfile
     command: tail -f /dev/null
+    privileged: true
     volumes:
       - qa:/home
 
