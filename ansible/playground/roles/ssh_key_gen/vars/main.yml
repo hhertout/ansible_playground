@@ -18,6 +18,6 @@ ssh_key_comment: "{{ ssh_user }}"
 generate_ssh_config: true
 ssh_config_name: ansible_config
 
-# Write config
+# Write ssh key config
 dest_key_folder: /ansible/group_vars/
 dest_key_file: ssh_key.yml
