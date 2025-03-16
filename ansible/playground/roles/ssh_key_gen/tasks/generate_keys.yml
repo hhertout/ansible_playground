@@ -41,6 +41,7 @@
 - name: Debug SSH keys value
   ansible.builtin.debug:
     var: ssh_key.public_key
+  failed_when: ssh_key.public_key is not defined
 
 - name: Start SSH agent
   ansible.builtin.shell: |

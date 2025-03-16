@@ -1,3 +1,4 @@
+# TODO: rework !
 ---
 - name: Check if ssh_private_key is defined
   ansible.builtin.fail:
@@ -52,3 +53,22 @@
     dest: "~/.ssh/{{ public_key_filename }}_{{ ssh_key_filename_identifier }}"
     mode: "0644"
   when: ssh_key_filename_identifier is defined
+
+# ADD SSH KEY TO AGENT
+
+- name: Start SSH agent
+  ansible.builtin.shell: |
+    eval $(ssh-agent)
+
+- name: Add SSH key
+  ansible.builtin.shell: |
+    ssh-add ~/.ssh/{{ private_key_filename }}{{ ssh_key_suffix }}
+
+- name: Check if the SSH key has been correctly added
+  ansible.builtin.shell: |
+    ssh-add -l
+  register: ssh_key_check
+
+- name: Debug SSH key check
+  ansible.builtin.debug:
+    var: ssh_key_check.stdout

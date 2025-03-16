@@ -1,24 +1,22 @@
+# Description: Add the ssh key to the user's authorized_keys file
+# Prerequisites: The user must be created
+# The ssh key must be generated
+# The ssh key must be stored in a vault and placed in the group_vars folder as "ssh_public_key"
 ---
+- name: Must use vault to send key to the client
+  fail:
+    msg: "use_vault must be set to true"
+  when: not use_vault
+
 - name: Check if user is defined
   fail:
     msg: "user is not defined"
   when: user is not defined
 
-- name: Copy private key on the controller
-  delegate_to: localhost
-  ansible.builtin.copy:
-    content: "{{ ssh_private_key }}"
-    dest: "~/.ssh/{{ private_key_filename }}"
-    mode: "0600"
-  when: use_vault
-
-- name: Copy public key on the controller
-  delegate_to: localhost
-  ansible.builtin.copy:
-    content: "{{ ssh_public_key }}"
-    dest: "~/.ssh/{{ public_key_filename }}"
-    mode: "0644"
-  when: use_vault
+- name: Check if ssh_public_key is defined
+  fail:
+    msg: "ssh_public_key is not defined"
+  when: ssh_public_key is not defined
 
 - name: Check if ssh folder exists
   become: true

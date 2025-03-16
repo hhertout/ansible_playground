@@ -18,4 +18,4 @@
 
 - name: Add ssh key
   include_tasks: add_ssh_key.yml
-  when: add_ssh_key
+  when: add_ssh_key and use_vault

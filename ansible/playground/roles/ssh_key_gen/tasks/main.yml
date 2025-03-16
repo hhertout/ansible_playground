@@ -21,9 +21,13 @@
   when: generate_keys
 
 - name: Copy from vault
-  include_tasks: from_vault.yml
+  include_tasks: apply_from_vault.yml
   when: use_vault
 
 - name: Generate SSH config file
   include_tasks: create_ssh_config.yml
   when: generate_ssh_config
+
+- name: Create shh public key file
+  include_tasks: write_key.yml
+  when: generate_keys

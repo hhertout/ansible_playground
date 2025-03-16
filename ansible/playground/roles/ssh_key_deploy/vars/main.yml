@@ -1,5 +1,5 @@
 # Enable if you use the playbooks on a docker environment
-install_on_docker: true
+docker_env: true
 
 # Use vault to store the keys - true or false
 use_vault: false

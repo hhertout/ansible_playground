@@ -4,9 +4,9 @@
   ansible.builtin.service:
     name: sshd
     state: restarted
-  when: not install_on_docker
+  when: not docker_env
 
 - name: Restart ssh service - docker
   become: true
   ansible.builtin.shell: service ssh restart
-  when: install_on_docker
+  when: docker_env
