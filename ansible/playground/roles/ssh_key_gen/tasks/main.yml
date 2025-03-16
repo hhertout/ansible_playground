@@ -1,0 +1,29 @@
+# This role aim to generate SSH key pair required to enable the SSH connection between the ansible controller and the targeted machines.
+# It can generate the keys on the host controller or copy them from the ansible vault. >group_vars/all/ssh.vault.yml
+#
+# It aim to generate the keys on the controller... not on the targeted machine.
+# For obvious security reasons, the private key should never be copied to the targeted machine.
+# The public key is the only one that should be copied to the targeted machine.
+# The private key should be stored in a safe place, like a password manager or a vault.
+---
+- name: Fail if use_vault and generate_keys are both true
+  fail:
+    msg: "use_vault and generate_keys can't be both true"
+  when: use_vault and generate_keys
+
+- name: Fail if use_vault and generate_ssh_config are both false
+  fail:
+    msg: "use_vault and generate_ssh_config can't be both false"
+  when: not use_vault and not generate_ssh_config
+
+- name: Generate SSH key pair
+  include_tasks: generate_keys.yml
+  when: generate_keys
+
+- name: Copy from vault
+  include_tasks: from_vault.yml
+  when: use_vault
+
+- name: Generate SSH config file
+  include_tasks: create_ssh_config.yml
+  when: generate_ssh_config

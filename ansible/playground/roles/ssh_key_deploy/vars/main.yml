@@ -1,0 +1,10 @@
+# Enable if you use the playbooks on a docker environment
+install_on_docker: true
+
+# Use vault to store the keys - true or false
+use_vault: false
+
+# Filenames for the keys
+ssh_key_filename_identifier:
+private_key_filename: id_ed25519_ansible
+public_key_filename: id_ed25519_ansible.pub

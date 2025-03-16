@@ -1,0 +1,14 @@
+---
+- name: Check private_key_filename is defined
+  fail:
+    msg: "private_key_filename is not defined"
+  when: private_key_filename is not defined
+
+- name: Generate SSH config file
+  ansible.builtin.template:
+    src: ssh_config.j2
+    dest: ~/.ssh/config
+    mode: "0600"
+    backup: yes
+    force: yes
+  tags: ssh_config

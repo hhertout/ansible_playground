@@ -1,0 +1,18 @@
+# Enable if the public and private keys are stored in a vault
+use_vault: false
+
+generate_keys: true
+
+# Filenames for the keys
+private_key_filename: id_ed25519_ansible
+public_key_filename: id_ed25519_ansible.pub
+ssh_key_filename_identifier:
+
+# Vars
+# Change it
+ssh_user: ANSIBLE@AUTOMATION
+ssh_key_comment: "{{ ssh_user }}"
+
+# SSH config file
+generate_ssh_config: true
+ssh_config_name: ansible_config

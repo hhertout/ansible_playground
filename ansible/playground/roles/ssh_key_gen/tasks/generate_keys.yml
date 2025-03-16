@@ -1,0 +1,60 @@
+---
+- name: Install bcrypt module
+  delegate_to: localhost
+  ansible.builtin.pip:
+    name: bcrypt
+    state: present
+
+- name: Install openssh
+  ansible.builtin.package:
+    name:
+      - sshpass
+      - openssh-client
+    state: present
+
+- name: Ensure ssh folder exists
+  ansible.builtin.file:
+    path: ~/.ssh
+    state: directory
+
+- name: Ensure ssh_key_filename_identifier is a string
+  ansible.builtin.set_fact:
+    ssh_key_filename_identifier: "{{ ssh_key_filename_identifier | default('') | string if ssh_key_filename_identifier | default('') | string != 'None' else '' }}"
+
+- name: Compute suffix for ssh key filename
+  ansible.builtin.set_fact:
+    ssh_key_suffix: "{{ ('_' + ssh_key_filename_identifier) if ssh_key_filename_identifier | length > 0 else '' }}"
+
+- name: Generate SSH keys with identifier
+  ansible.builtin.openssh_keypair:
+    comment: "{{ ssh_key_comment }}"
+    path: "~/.ssh/{{ private_key_filename }}{{ ssh_key_suffix }}"
+    type: "ed25519"
+    state: present
+    passphrase: "{{ ssh_passphrase }}"
+  register: ssh_key
+
+- name: Debug SSH keys path
+  ansible.builtin.debug:
+    var: ssh_key.filename
+
+- name: Debug SSH keys value
+  ansible.builtin.debug:
+    var: ssh_key.public_key
+
+- name: Start SSH agent
+  ansible.builtin.shell: |
+    eval $(ssh-agent)
+
+- name: Add SSH key
+  ansible.builtin.shell: |
+    ssh-add ~/.ssh/{{ private_key_filename }}{{ ssh_key_suffix }}
+
+- name: Check if the SSH key has been correctly added
+  ansible.builtin.shell: |
+    ssh-add -l
+  register: ssh_key_check
+
+- name: Debug SSH key check
+  ansible.builtin.debug:
+    var: ssh_key_check.stdout

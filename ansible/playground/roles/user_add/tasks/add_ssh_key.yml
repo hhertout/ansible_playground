@@ -1,0 +1,50 @@
+---
+- name: Check if user is defined
+  fail:
+    msg: "user is not defined"
+  when: user is not defined
+
+- name: Copy private key on the controller
+  delegate_to: localhost
+  ansible.builtin.copy:
+    content: "{{ ssh_private_key }}"
+    dest: "~/.ssh/{{ private_key_filename }}"
+    mode: "0600"
+  when: use_vault
+
+- name: Copy public key on the controller
+  delegate_to: localhost
+  ansible.builtin.copy:
+    content: "{{ ssh_public_key }}"
+    dest: "~/.ssh/{{ public_key_filename }}"
+    mode: "0644"
+  when: use_vault
+
+- name: Check if ssh folder exists
+  become: true
+  ansible.builtin.file:
+    path: "/home/{{ user }}/.ssh"
+    state: directory
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: "0700"
+
+- name: Add the public key
+  become: true
+  ansible.builtin.copy:
+    content: "{{ ssh_public_key }}"
+    dest: "/home/{{ user }}/.ssh/authorized_keys"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: "0600"
+  notify:
+    - Restart ssh service - docker
+    - Restart ssh service - server
+
+- name: Check the content of authorized_keys
+  ansible.builtin.shell: "cat /home/{{ user }}/.ssh/authorized_keys"
+  register: ssh_key_check
+
+- name: Debug authorized_keys
+  ansible.builtin.debug:
+    var: ssh_key_check.stdout

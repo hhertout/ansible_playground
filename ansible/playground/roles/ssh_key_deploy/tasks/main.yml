@@ -1,0 +1,48 @@
+---
+- name: Ensure ssh_key_filename_identifier is a string
+  ansible.builtin.set_fact:
+    ssh_key_filename_identifier: "{{ ssh_key_filename_identifier | default('') | string }}"
+  when: not use_vault
+
+- name: Compute suffix for ssh key filename
+  ansible.builtin.set_fact:
+    ssh_key_suffix: "'_' + ssh_key_filename_identifier if ssh_key_filename_identifier | length > 0 else ''"
+  when: not use_vault
+
+- name: Register the public key from file
+  ansible.builtin.shell: "cat ~/.ssh/{{ public_key_src_filename }}{{ ssh_key_suffix }}"
+  delegate_to: localhost
+  register: public_key
+  when: not use_vault
+
+- name: Override ssh_public_key with public_key content
+  ansible.builtin.set_fact:
+    ssh_public_key: "{{ public_key.stdout }}"
+  when: not use_vault
+
+- name: Check if ssh folder exists
+  become: true
+  ansible.builtin.file:
+    path: ~/.ssh
+    state: directory
+    mode: "0700"
+
+- name: Add the public key
+  become: true
+  ansible.builtin.copy:
+    content: "{{ ssh_public_key }}"
+    dest: ~/.ssh/authorized_keys
+    mode: "0600"
+  notify:
+    - Restart ssh service - docker
+    - Restart ssh service - server
+
+- name: Check the content of authorized_keys
+  become: true
+  ansible.builtin.shell: "cat ~/.ssh/authorized_keys"
+  register: ssh_key_check
+
+- name: Debug authorized_keys
+  become: true
+  ansible.builtin.debug:
+    var: ssh_key_check.stdout

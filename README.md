@@ -64,10 +64,10 @@ If you have success message, it mean you are ready to go ! 🚀
 
 ## Users configuration
 
-| User         | Password |
-| ------------ | -------- |
-| root         | password |
-| ansible_user | ansible  |
+| User    | Password |
+| ------- | -------- |
+| root    | password |
+| ansible | ansible  |
 
 ## Encrypt files with Ansible Vault
 

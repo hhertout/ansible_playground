@@ -1,0 +1,5 @@
+- hosts: localhost
+  gather_facts: false
+  become: true
+  roles:
+    - role: ssh_key_gen

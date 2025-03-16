@@ -1,0 +1,16 @@
+- name: Chek user is defined
+  fail:
+    msg: "user is not defined"
+  when: user is not defined
+
+- name: Chek user_password is defined
+  fail:
+    msg: "user_password is not defined"
+  when: user_password is not defined
+
+- name: Add user
+  ansible.builtin.user:
+    name: "{{ user }}"
+    state: present
+    groups: "{{ user_groups | default(user) }}"
+    password: "{{ user_password | password_hash('sha512') }}"

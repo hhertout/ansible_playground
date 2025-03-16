@@ -7,6 +7,7 @@ services:
     volumes:
       - ./ansible/config/ansible.cfg:/etc/ansible/ansible.cfg
       - ./ansible/playground/:/ansible/
+      - ./ansible/src/:/ansible/src/
 
   prod:
     build:

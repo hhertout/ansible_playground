@@ -12,7 +12,6 @@ RUN dnf install -y \
     initscripts \
     && dnf clean all
 
-
 # SSH configuration
 RUN mkdir -p /var/run/sshd
 RUN echo 'root:password' | chpasswd

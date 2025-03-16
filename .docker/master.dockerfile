@@ -58,6 +58,7 @@ USER root
 
 # Install passlib for Ansible Vault
 RUN pip install passlib
+RUN pip install bcrypt
 
 # Install Starship Prompt
 RUN mkdir /root/.config

@@ -1,20 +1,21 @@
-- name: Create sudo group
-  ansible.builtin.group:
-    name: sudo
+---
+- name: Install passlib
+  delegate_to: localhost
+  ansible.builtin.pip:
+    name: passlib
     state: present
-  when: create_sudo_group | default(false)
 
-- name: Configure sudo group
-  ansible.builtin.lineinfile:
-    path: /etc/sudoers
-    line: "%sudo ALL=(ALL) ALL"
-    validate: "visudo -cf %s"
-  when: create_sudo_group | default(false)
+- name: Create sudo group
+  include_tasks: create_sudo_group.yml
+  when: create_sudo_group
 
 - name: Add user
   ansible.builtin.user:
     name: "{{ user }}"
     state: present
     groups: "{{ user_groups }}"
-    append: yes
     password: "{{ user_password | password_hash('sha512') }}"
+
+- name: Add ssh key
+  include_tasks: add_ssh_key.yml
+  when: add_ssh_key
