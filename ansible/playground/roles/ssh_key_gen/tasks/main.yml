@@ -6,6 +6,26 @@
 # The public key is the only one that should be copied to the targeted machine.
 # The private key should be stored in a safe place, like a password manager or a vault.
 ---
+- name: Fail if generate_keys is not defined
+  fail:
+    msg: "generate_keys is not defined"
+  when: generate_keys is not defined
+
+- name: Fail if use_vault is not defined
+  fail:
+    msg: "use_vault is not defined"
+  when: use_vault is not defined
+
+- name: Fail if generate_ssh_config is not defined
+  fail:
+    msg: "generate_ssh_config is not defined"
+  when: generate_ssh_config is not defined
+
+- name: Fail if write_ssh_key is not defined
+  fail:
+    msg: "write_ssh_key is not defined"
+  when: write_ssh_key is not defined
+
 - name: Fail if use_vault and generate_keys are both true
   fail:
     msg: "use_vault and generate_keys can't be both true"
@@ -21,7 +41,7 @@
   when: generate_keys
 
 - name: Copy from vault
-  include_tasks: apply_from_vault.yml
+  include_tasks: generate_from_vault.yml
   when: use_vault
 
 - name: Generate SSH config file
@@ -30,4 +50,4 @@
 
 - name: Create shh public key file
   include_tasks: write_key.yml
-  when: generate_keys
+  when: generate_keys and write_ssh_key

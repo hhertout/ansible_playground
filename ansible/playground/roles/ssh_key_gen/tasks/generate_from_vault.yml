@@ -1,0 +1,21 @@
+# TODO: rework !
+---
+- name: Check if ssh_keys is defined
+  ansible.builtin.fail:
+    msg: "ssh_keys is not defined"
+  when: ssh_keys is not defined
+
+- name: Ensure ssh folder exists
+  ansible.builtin.file:
+    path: ~/.ssh
+    state: directory
+    mode: "0700"
+
+- name: Create SSH key files
+  ansible.builtin.copy:
+    content: "{{ item.value }}"
+    dest: "~/.ssh/{{ item.key | regex_replace('^public_|^private_', '') }}{{ '.pub' if item.key.startswith('public_') else '' }}"
+    mode: "{{ '0644' if item.key.startswith('public_') else '0600' }}"
+  loop: "{{ ssh_keys | dict2items }}"
+  when: ssh_keys is defined
+  no_log: true

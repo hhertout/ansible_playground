@@ -1,0 +1,3 @@
+  public_{{ private_key_filename }}{{ ssh_key_suffix }}: "{{ ssh_public_key }}"
+  private_{{ private_key_filename }}{{ ssh_key_suffix }}: |
+    {{ ssh_private_key | indent(4, False) }}

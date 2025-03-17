@@ -28,15 +28,19 @@
     ssh_private_key: "{{ ssh_private_key_output.stdout }}"
   when: ssh_private_key_output.stdout is defined
 
+- name: Ensure the key file exists with 'ssh_keys:'
+  ansible.builtin.lineinfile:
+    path: "{{ dest_key_folder }}{{ dest_key_file }}"
+    line: "ssh_keys:"
+    create: yes
+    state: present
+
 - name: Add the SSH key block in the key file
   ansible.builtin.blockinfile:
     path: "{{ dest_key_folder }}{{ dest_key_file }}"
     create: yes
-    block: |
-      {{ private_key_filename }}{{ ssh_key_suffix }}:
-        public: "{{ ssh_public_key }}"
-        private: |
-          {{ ssh_private_key | indent(4) }}
+    marker: "# {mark} {{ private_key_filename }}{{ ssh_key_suffix }} ANSIBLE SSH KEY"
+    block: "{{ lookup('template', 'ssh_key_block.j2') }}"
 
 - name: Ensure .gitignore exists
   ansible.builtin.file:

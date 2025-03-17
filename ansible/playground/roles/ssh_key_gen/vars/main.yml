@@ -1,16 +1,12 @@
 # Enable if the public and private keys are stored in a vault
-use_vault: false
-
-generate_keys: true
+use_vault: true
+generate_keys: false
 
 # Filenames for the keys
 private_key_filename: id_ed25519_ansible
 public_key_filename: id_ed25519_ansible.pub
 # Add a suffix to the filename to identify the key - used to distinct between multiple environments
-ssh_key_filename_identifier:
-
-# Vars
-# Change it
+ssh_key_filename_identifier: dev
 ssh_user: ANSIBLE@AUTOMATION
 ssh_key_comment: "{{ ssh_user }}"
 
@@ -19,5 +15,6 @@ generate_ssh_config: true
 ssh_config_name: ansible_config
 
 # Write ssh key config
-dest_key_folder: /ansible/group_vars/
+write_ssh_key: true
+dest_key_folder: /ansible/group_vars/all/
 dest_key_file: ssh_key.yml
