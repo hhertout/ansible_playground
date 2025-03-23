@@ -1,5 +1,5 @@
 <p align="center">
-<img src=".github/assets/ansible.png" align="center" width="400" />
+<img src=".github/assets/ansible.png" align="center" width="250" />
     <h1 align="center">Ansible</h1>
     <p align="center">Playbooks & Playground</p>
 </p>
