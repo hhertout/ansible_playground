@@ -1,0 +1,10 @@
+---
+- name: Install Kubernetes Collection
+  ansible.builtin.command: ansible-galaxy collection install kubernetes.core
+  changed_when: false
+
+- name: Verify Kubernetes Collection is installed
+  ansible.builtin.command: ansible-galaxy collection list kubernetes.core
+  register: k8s_collection_check
+  changed_when: false
+  failed_when: "'kubernetes.core' not in k8s_collection_check.stdout"

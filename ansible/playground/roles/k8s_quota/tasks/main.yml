@@ -1,0 +1,23 @@
+---
+- name: Ensure required variables are defined
+  ansible.builtin.assert:
+    that:
+      - k8s_namespace is defined
+      - k8s_max_pods is defined
+      - k8s_request is defined
+      - k8s_limit is defined
+      - k8s_request.cpu is defined
+      - k8s_request.memory is defined
+      - k8s_limit.cpu is defined
+      - k8s_limit.memory is defined
+    fail_msg: "One or more required variables are not defined."
+
+- name: Install dependencies
+  include_tasks: install_kube_deps.yml
+  when: install_deps
+
+- name: Generate kubeconfig
+  include_tasks: gen_kubeconfig.yml
+
+- name: Apply Quotas
+  include_tasls: apply_quota.yml

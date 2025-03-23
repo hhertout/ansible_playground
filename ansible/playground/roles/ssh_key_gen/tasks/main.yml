@@ -6,35 +6,20 @@
 # The public key is the only one that should be copied to the targeted machine.
 # The private key should be stored in a safe place, like a password manager or a vault.
 ---
-- name: Fail if generate_keys is not defined
-  fail:
-    msg: "generate_keys is not defined"
-  when: generate_keys is not defined
+- name: Checks
+  ansible.builtin.assert:
+    that:
+      - generate_keys is defined
+      - use_vault is defined
+      - generate_ssh_config is defined
+      - write_ssh_key is defined
+    fail_message: "Mandatory variables are not defined"
 
-- name: Fail if use_vault is not defined
-  fail:
-    msg: "use_vault is not defined"
-  when: use_vault is not defined
-
-- name: Fail if generate_ssh_config is not defined
-  fail:
-    msg: "generate_ssh_config is not defined"
-  when: generate_ssh_config is not defined
-
-- name: Fail if write_ssh_key is not defined
-  fail:
-    msg: "write_ssh_key is not defined"
-  when: write_ssh_key is not defined
-
-- name: Fail if use_vault and generate_keys are both true
-  fail:
-    msg: "use_vault and generate_keys can't be both true"
-  when: use_vault and generate_keys
-
-- name: Fail if use_vault and generate_ssh_config are both false
-  fail:
-    msg: "use_vault and generate_ssh_config can't be both false"
-  when: not use_vault and not generate_ssh_config
+- name: Verify use_vault & generate_keys value
+  ansible.builtin.assert:
+    that:
+      - use_vault = generate_keys
+    fail_message: "use_vault and generate_keys can't be both the same value"
 
 - name: Generate SSH key pair
   include_tasks: generate_keys.yml

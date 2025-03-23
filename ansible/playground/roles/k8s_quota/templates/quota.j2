@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: "{{ k8s_namespace }}-quota"
+  namespace: "{{ k8s_namespace }}"
+spec:
+  hard:
+    pods: "{{ k8s_max_pods }}"
+    requests.cpu: "{{ k8s_request.cpu }}"
+    requests.memory: "{{ k8s_request.memory }}"
+    limits.cpu: "{{ k8s_limit.cpu }}"
+    limits.memory: "{{ k8s_limit.memory }}"

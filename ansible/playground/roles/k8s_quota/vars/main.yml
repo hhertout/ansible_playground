@@ -1,0 +1,26 @@
+install_deps: true
+
+# kubeconfig - to vault in production
+kube_clusters:
+  - name: "dev"
+    server: "https://dev.example.com"
+    ca_cert: "{{ lookup('file', 'certs/dev-ca.pem') | b64encode }}"
+
+kube_users:
+  - name: "eks-user"
+    token: "{{ k8s_dev_token }}"
+
+kube_contexts:
+  - cluster: "dev"
+    user: "dev-user"
+    namespace: "dev"
+
+# quotas
+k8s_namespace: mon-namespace
+k8s_max_pods: 10
+k8s_request:
+  cpu: 1m
+  memory: 40Mi
+k8s_limit:
+  cpu: 1m
+  memory: 40Mi
