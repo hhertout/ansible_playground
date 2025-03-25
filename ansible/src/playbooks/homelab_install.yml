@@ -1,0 +1,33 @@
+- hosts: localhost
+  gather_facts: true
+  tasks:
+    - name: Generate SSH key locally
+      ansible.builtin.include_role:
+        name: ssh_key_gen
+
+- hosts: homelab
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Check OS distribution
+      ansible.builtin.debug:
+        var: ansible_distribution
+
+    - name: Install base packages
+      ansible.builtin.package:
+        name:
+          - nmap
+          - telnet
+          - curl
+          - git
+          - htop
+          - vim
+          - net-tools
+          - python3
+          - python3-pip
+          - openssh-server
+          - openssl
+        state: present
+
+  roles:
+    - role: user_add

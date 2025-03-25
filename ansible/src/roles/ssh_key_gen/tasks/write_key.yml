@@ -1,0 +1,55 @@
+# Write public key in a temp file to rapidly retrieve it for inserting it in the vault
+---
+- name: Check dest folder var is defined
+  ansible.builtin.fail:
+    msg: "dest_key_folder is not defined"
+  when: dest_key_folder is not defined
+
+- name: Check dest file var is defined
+  ansible.builtin.fail:
+    msg: "dest_key_file is not defined"
+  when: dest_key_file is not defined
+
+- name: Retrieve the public key
+  ansible.builtin.command: "cat ~/.ssh/{{ private_key_filename }}{{ ssh_key_suffix }}.pub"
+  register: ssh_public_key_output
+
+- name: Retrieve private key
+  ansible.builtin.command: "cat ~/.ssh/{{ private_key_filename }}{{ ssh_key_suffix }}"
+  register: ssh_private_key_output
+
+- name: Set the public key
+  set_fact:
+    ssh_public_key: "{{ ssh_public_key_output.stdout }}"
+  when: ssh_public_key_output.stdout is defined
+
+- name: Set the private key
+  set_fact:
+    ssh_private_key: "{{ ssh_private_key_output.stdout }}"
+  when: ssh_private_key_output.stdout is defined
+
+- name: Ensure the key file exists with 'ssh_keys:'
+  ansible.builtin.lineinfile:
+    path: "{{ dest_key_folder }}{{ dest_key_file }}"
+    line: "ssh_keys:"
+    create: yes
+    state: present
+
+- name: Add the SSH key block in the key file
+  ansible.builtin.blockinfile:
+    path: "{{ dest_key_folder }}{{ dest_key_file }}"
+    create: yes
+    marker: "# {mark} {{ private_key_filename }}{{ ssh_key_suffix }} ANSIBLE SSH KEY"
+    block: "{{ lookup('template', 'ssh_key_block.j2') }}"
+
+- name: Ensure .gitignore exists
+  ansible.builtin.file:
+    path: "{{ dest_key_folder }}/.gitignore"
+    state: touch
+    mode: "0644"
+
+- name: Add the dest file in SSH key file
+  ansible.builtin.lineinfile:
+    path: "{{ dest_key_folder }}.gitignore"
+    line: "{{ dest_key_file }}"
+    create: yes

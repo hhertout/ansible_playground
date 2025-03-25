@@ -1,0 +1,6 @@
+docker_env: false
+create_sudo_group: true
+
+# SSH config
+add_ssh_key: true
+ssh_key_filename_identifier: homelab

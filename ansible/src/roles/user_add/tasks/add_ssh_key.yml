@@ -1,0 +1,55 @@
+# Description: Add the ssh key to the user's authorized_keys file
+# Prerequisites: The user must be created
+# The ssh key must be generated
+# The ssh key must be stored in a vault and placed in the group_vars folder as "ssh_public_key"
+---
+- name: Check if user is defined
+  ansible.builtin.fail:
+    msg: "user is not defined"
+  when: not user is defined
+
+- name: Define SSH key variable name
+  ansible.builtin.set_fact:
+    ssh_key_var_name: >-
+      {{ 'public_id_ed25519_ansible' + ('_' + ssh_key_filename_identifier if ssh_key_filename_identifier is defined and ssh_key_filename_identifier | length > 0 else '') }}
+
+- name: Check if SSH key is defined
+  ansible.builtin.fail:
+    msg: "{{ ssh_key_var_name }} is not defined in ssh_keys"
+  when: ssh_key_var_name not in ssh_keys
+
+- name: Debug ssh key
+  ansible.builtin.debug:
+    var: ssh_key_var_name
+
+- name: Ensure .ssh directory exists
+  become: true
+  ansible.builtin.file:
+    path: "/home/{{ user }}/.ssh"
+    state: directory
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: "0700"
+
+- name: Add the public key
+  become: true
+  ansible.builtin.copy:
+    content: "{{ ssh_keys[ssh_key_var_name] }}"
+    dest: "/home/{{ user }}/.ssh/authorized_keys"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: "0600"
+  notify:
+    - Restart ssh service - docker
+    - Restart ssh service - server
+
+- name: Read authorized_keys file
+  become: true
+  ansible.builtin.slurp:
+    src: "/home/{{ user }}/.ssh/authorized_keys"
+  register: ssh_key_check
+
+- name: Debug authorized_keys content
+  become: true
+  ansible.builtin.debug:
+    var: ssh_key_check.content | b64decode

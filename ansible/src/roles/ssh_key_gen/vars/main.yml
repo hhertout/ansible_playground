@@ -1,0 +1,20 @@
+# Enable if the public and private keys are stored in a vault
+use_vault: false
+generate_keys: true
+
+# Filenames for the keys
+private_key_filename: id_ed25519_ansible
+public_key_filename: id_ed25519_ansible.pub
+# Add a suffix to the filename to identify the key - used to distinct between multiple environments
+ssh_key_filename_identifier: homelab
+ssh_user: ANSIBLE@AUTOMATION
+ssh_key_comment: "{{ ssh_user }}"
+
+# SSH config file
+generate_ssh_config: false
+ssh_config_name: ansible_config
+
+# Write ssh key config
+write_ssh_key: true
+dest_key_folder: ../group_vars/all/
+dest_key_file: ssh_key.yml

@@ -1,0 +1,12 @@
+---
+- name: Restart ssh service - server
+  become: true
+  ansible.builtin.service:
+    name: ssh
+    state: restarted
+  when: not docker_env
+
+- name: Restart ssh service - docker
+  become: true
+  ansible.builtin.shell: service ssh restart
+  when: docker_env

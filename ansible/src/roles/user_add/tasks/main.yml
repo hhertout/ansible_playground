@@ -1,0 +1,11 @@
+---
+- name: Create sudo group
+  include_tasks: create_sudo_group.yml
+  when: create_sudo_group
+
+- name: Add user
+  include_tasks: add_user.yml
+
+- name: Add ssh key
+  include_tasks: add_ssh_key.yml
+  when: add_ssh_key

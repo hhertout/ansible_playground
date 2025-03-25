@@ -1,0 +1,11 @@
+---
+- name: Create sudo group
+  ansible.builtin.group:
+    name: sudo
+    state: present
+
+- name: Configure sudo group
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    line: "%sudo ALL=(ALL) ALL"
+    validate: "visudo -cf %s"
