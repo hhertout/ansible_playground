@@ -1,0 +1,25 @@
+---
+- name: Check if k3s is already installed
+  ansible.builtin.command: "k3s --version"
+  register: k3s_exists
+  ignore_errors: true
+
+- name: Stdout K3s --version"
+  ansible.builtin.debug:
+    var: k3s_exists.stdout
+  when: k3s_exists.stdout is defined
+
+- name: k3s installation
+  block:
+    - name: Install on Rocky
+      include_tasks: rocky.yml
+      when: ansible_distribution == 'Rocky' or ansible_distribution == 'RedHat'
+
+    - name: Install on Ubuntu & Debian
+      include_tasks: ubuntu.yml
+      when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+
+  when: k3s_exists.rc != 0
+
+- name: Copy kubeconfig
+  include_tasks: copy_connection.yml

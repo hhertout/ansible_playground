@@ -1,0 +1,43 @@
+---
+- name: Set kubeconfig fact
+  become: true
+  ansible.builtin.stat:
+    path: /etc/rancher/k3s/k3s.yaml
+  register: k3s_kubeconfig
+
+- name: Fail if the file doesn't exist
+  ansible.builtin.fail:
+    msg: "Kube config doesn't exist"
+  when: not k3s_kubeconfig.stat.exists
+
+- name: Copy kubeconfig to /tmp
+  become: true
+  ansible.builtin.copy:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: /tmp/k3s.yaml
+    mode: "0644"
+    remote_src: true
+
+- name: Debug host var
+  ansible.builtin.debug:
+    var: ansible_host
+
+- name: Replace host in kubeconfig
+  become: true
+  ansible.builtin.replace:
+    path: "/tmp/k3s.yaml"
+    regexp: "127\\.0\\.0\\.1"
+    replace: "{{ ansible_host }}"
+
+- name: Save the config file to local directory
+  become: true
+  ansible.builtin.fetch:
+    src: "/tmp/k3s.yaml"
+    dest: "~/.kube/home_cluster.yml"
+    flat: true
+
+- name: Delete the kubeconfig
+  become: true
+  ansible.builtin.file:
+    path: "/tmp/k3s.yaml"
+    state: absent

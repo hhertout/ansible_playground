@@ -5,9 +5,7 @@ services:
       dockerfile: .docker/master.dockerfile
     container_name: ansible_master
     volumes:
-      - ./ansible/config/ansible.cfg:/etc/ansible/ansible.cfg
-      - ./ansible/playground/:/ansible/
-      - ./ansible/src/:/ansible/src/
+      - ./:/ansible/
 
   prod:
     build:

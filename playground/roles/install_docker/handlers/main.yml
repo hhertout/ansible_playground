@@ -1,0 +1,13 @@
+---
+- name: Start docker daemon
+  ansible.builtin.systemd:
+    name: docker
+    state: started
+    enabled: yes
+  ignore_errors: "{{ docker_env | default(false) }}"
+
+- name: Stop docker daemon
+  ansible.builtin.systemd:
+    name: docker
+    state: stopped
+  ignore_errors: "{{ docker_env | default(false) }}"
