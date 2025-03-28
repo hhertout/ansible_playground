@@ -1,0 +1,24 @@
+- name: Apply user service account
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'user-service-account.j2') }}"
+    kubeconfig: "{{ kubeconfig_file_location }}"
+    state: present
+
+- name: Apply user secret
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'user-secret.j2') }}"
+    state: present
+    kubeconfig: "{{ kubeconfig_file_location }}"
+
+- name: Retrieve token
+  ansible.builtin.command: "kubectl get secret {{user_name}}-token -n kube-system -o jsonpath='{.data.token}'"
+  register: token_output
+
+- name: Decode token
+  ansible.builtin.shell: echo "{{ token_output.stdout }}" | base64 --decode
+  register: decoded_token
+  changed_when: false
+
+- name: Show token output
+  debug:
+    var: decoded_token.stdout

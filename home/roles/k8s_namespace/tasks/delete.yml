@@ -1,0 +1,30 @@
+- name: Assert vars are defined
+  ansible.builtin.assert:
+    that:
+      - namespace_name is defined
+      - user is defined
+    msg: Mandatory vars are not defined
+
+- name: Apply namespace
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'namespace.j2') }}"
+    state: absent
+    kubeconfig: "{{ kubeconfig_file_location }}"
+
+- name: Apply namespace quotas
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'namespace-quota.j2') }}"
+    state: absent
+    kubeconfig: "{{ kubeconfig_file_location }}"
+
+- name: Apply role
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'role.j2') }}"
+    state: absent
+    kubeconfig: "{{ kubeconfig_file_location }}"
+
+- name: Apply role binding
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'role-binding.j2') }}"
+    state: absent
+    kubeconfig: "{{ kubeconfig_file_location }}"

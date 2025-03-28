@@ -2,6 +2,7 @@
 - hosts: k8s_master
   vars:
     ansible_python_interpreter: /usr/bin/python3
+    action: delete
   become: true
   gather_facts: false
 
