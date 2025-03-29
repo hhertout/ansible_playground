@@ -5,9 +5,9 @@ metadata:
   namespace: {{namespace_name}}
 subjects:
   - kind: ServiceAccount
-    name: {{user}}
+    name: {{user_name}}
     namespace: kube-system
 roleRef:
   kind: Role
-  name: {{user}}-role
+  name: {{user_name}}-role
   apiGroup: rbac.authorization.k8s.io

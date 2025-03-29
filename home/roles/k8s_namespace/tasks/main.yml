@@ -2,7 +2,7 @@
   ansible.builtin.assert:
     that:
       - namespace_name is defined
-      - user is defined
+      - user_name is defined
     msg: Mandatory vars are not defined
 
 - name: Create namespace
