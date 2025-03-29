@@ -5,3 +5,6 @@
 
   roles:
     - role: install_k3s
+    - role: k8s_ingress
+      vars:
+        kind: nginx

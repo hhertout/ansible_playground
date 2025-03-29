@@ -1,0 +1,9 @@
+---
+- name: Install ingress nginx
+  ansible.builtin.shell: "kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.1/deploy/static/provider/cloud/deploy.yaml"
+
+- name: Delete traefik ingress resources
+  ansible.builtin.shell: |
+    kubectl delete service traefik -n kube-system
+    kubectl delete deployment traefik -n kube-system
+  ignore_errors: true

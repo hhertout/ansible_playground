@@ -1,0 +1,14 @@
+---
+- name: Check mandatory vars
+  ansible.builtin.assert:
+    that:
+      - kind is defined
+    msg: Mandatory vars are not defined
+
+- name: Install ingress nginx controller
+  include_tasks: nginx.yml
+  when: kind == "nginx"
+
+- name: Install ingress nginx controller
+  include_tasks: traefik.yml
+  when: kind == "traefik"
