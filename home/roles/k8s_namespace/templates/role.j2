@@ -25,3 +25,6 @@ rules:
   - apiGroups: ["metrics.k8s.io"]
     resources: ["pods"]
     verbs: ["get", "list"]
+  - apiGroups: ["cert-manager.io"]
+    resources: ["certificates", "certificaterequests", "issuers"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]

@@ -1,0 +1,6 @@
+- name: Install cert manager
+  include_tasks: install.yml
+  when: kind is not defined or kind != "delete"
+
+- name: Uninstall cert manager
+  when: kind is defined and kind == "delete"
