@@ -1,0 +1,7 @@
+grafana_auth = "user:pasword"
+grafana_url  = "https://grafana.url.com"
+
+user_login    = "username"
+user_name     = "User Name"
+user_email    = "example@example.com"
+user_password = "password"

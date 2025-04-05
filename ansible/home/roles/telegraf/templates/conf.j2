@@ -1,0 +1,35 @@
+[[inputs.cpu]]
+  percpu = true
+  totalcpu = true
+  collect_cpu_time = false
+
+[[inputs.mem]]
+
+[[inputs.disk]]
+  ignore_fs = ["tmpfs", "devtmpfs", "overlay"]
+
+[[inputs.diskio]]
+
+[[inputs.net]]
+
+[[inputs.system]]
+  fieldpass = ["uptime", "load1", "load5", "load15"]
+
+[[inputs.procstat]]
+  pattern = "sshd"
+
+[[inputs.tail]]
+  files = ["{{access_log_path}}"]
+  from_beginning = false
+  watch_method = "inotify"
+
+  [[inputs.tail.tagpass]]
+    log_level = ["info", "warn", "error"]
+
+  [[inputs.tail.parsing]]
+    data_format = "grok"
+    patterns = ["%{SYSLOGTIMESTAMP:timestamp} %{SYSLOGHOST:host} sshd\\[%{POSINT:pid}\\]: %{GREEDYDATA:message}"]
+
+[[outputs.opentelemetry]]
+  service_address = "{{otel_gateway}}"
+  resource_attributes = { "host" = "$HOSTNAME", "job" = "telegraf", service = "$HOSTNAME" }

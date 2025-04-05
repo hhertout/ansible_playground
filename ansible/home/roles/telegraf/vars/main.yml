@@ -1,0 +1,3 @@
+conf_path: /etc
+otel_gateway: http://localhost:443
+access_log_path: /var/log/auth.log

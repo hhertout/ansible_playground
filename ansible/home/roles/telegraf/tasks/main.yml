@@ -1,0 +1,13 @@
+- name: Check if already install
+  register: check_install
+
+- block:
+    - name: Add telegraf user and group
+    # TODO
+
+    - name: Install agent on Ubuntu
+      include_tasks: ubuntu.yml
+      when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+      notify: Restart telegraf agent
+
+  when: check_install.rc == 0

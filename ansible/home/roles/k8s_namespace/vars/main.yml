@@ -1,0 +1,8 @@
+namespace_name: dobsgbl0
+user_name: kube
+limit_cpu: "2"
+limit_memory: "2Gi"
+limit_pods: "20"
+requests_cpu: "1"
+requests_memory: "1Gi"
+requests_storage: "5Gi"
