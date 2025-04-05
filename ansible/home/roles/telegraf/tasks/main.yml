@@ -1,13 +1,128 @@
-- name: Check if already install
+---
+- name: Check if telegraf is installed
+  become: true
+  ansible.builtin.command: telegraf --version
+  ignore_errors: true
   register: check_install
 
-- block:
-    - name: Add telegraf user and group
-    # TODO
+- name: Check if telegraf is running
+  become: true
+  ansible.builtin.command: systemctl is-active telegraf
+  ignore_errors: true
+  register: running_status
 
+- name: Debug install status & running status
+  ansible.builtin.debug:
+    msg: "Telegraf is installed: {{ check_install.stdout }} and running: {{ running_status.stdout }}"
+
+- name: Add telegraf user and group
+  become: true
+  block:
+    - name: Add telegraf user and group
+      ansible.builtin.user:
+        name: "telegraf"
+        state: present
+        create_home: no
+        shell: /usr/sbin/nologin
+
+- name: Create temporary directory for Ansible
+  ansible.builtin.file:
+    path: /tmp/ansible-telegraf
+    state: directory
+    mode: '0777'
+  become: true
+
+- name: Create a temporary directory for telegraf
+  become: true
+  ansible.builtin.file:
+    path: /tmp/telegraf_tmp
+    state: directory
+    owner: telegraf
+    group: telegraf
+    mode: "0755"
+
+- name: Install telegraf
+  become: true
+  block:
     - name: Install agent on Ubuntu
       include_tasks: ubuntu.yml
       when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
-      notify: Restart telegraf agent
 
-  when: check_install.rc == 0
+  when: check_install.failed == true
+
+- name: Install configuration file
+  become: true
+  ansible.builtin.template:
+    src: conf.j2
+    dest: "{{ conf_path }}"
+    owner: telegraf
+    group: telegraf
+    mode: "0644"
+
+- name: Launch telegraf
+  become: true
+  block:
+    - name: Start telegraf
+      become_user: telegraf
+      ansible.builtin.command:
+        cmd: telegraf --config {{ conf_path }} --once
+      register: telegraf_start
+      vars:
+        ansible_remote_tmp: /tmp
+
+    - name: Check telegraf status
+      ansible.builtin.command: systemctl is-active telegraf
+      register: check_status
+      ignore_errors: true
+    
+    - name: Configure Telegraf systemd service
+      become: true
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/telegraf.service
+        content: |
+          [Unit]
+          Description=Telegraf Data Collector
+          After=network.target
+
+          [Service]
+          User=telegraf
+          Group=telegraf
+          ExecStart=/usr/bin/telegraf --config {{ conf_path }}
+          Restart=on-failure
+          RestartForceExitStatus=SIGPIPE
+          KillMode=control-group
+
+          [Install]
+          WantedBy=multi-user.target
+          mode: '0644'
+        
+    - name: Reload systemd daemon
+      become: true
+      ansible.builtin.systemd:
+        daemon_reload: yes
+    
+    - name: Stop Telegraf service
+      become: true
+      ansible.builtin.systemd:
+        name: telegraf
+        state: stopped
+        enabled: yes
+
+    - name: Enable and start Telegraf service
+      become: true
+      ansible.builtin.systemd:
+        name: telegraf
+        state: started
+        enabled: yes
+
+- name: Check Telegraf service status
+  become: true
+  ansible.builtin.command:
+    cmd: systemctl status telegraf
+  register: telegraf_status
+  changed_when: false
+
+- name: Fail if Telegraf is not running
+  ansible.builtin.fail:
+    msg: "Telegraf service is not running. Please check the service."
+  when: telegraf_status.rc != 0

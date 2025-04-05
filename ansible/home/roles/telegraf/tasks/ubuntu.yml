@@ -1,14 +1,14 @@
 ---
 - name: Prepare package manager
-  ansible.bultin.shell: |
+  ansible.builtin.shell: |
     curl --silent --location -O \
     https://repos.influxdata.com/influxdata-archive.key \
     && echo "943666881a1b8d9b849b74caebf02d3465d6beb716510d86a39f6c8e8dac7515  influxdata-archive.key" \
     | sha256sum -c - && cat influxdata-archive.key \
     | gpg --dearmor \
-    | sudo tee /etc/apt/trusted.gpg.d/influxdata-archive.gpg > /dev/null \
+    | tee /etc/apt/trusted.gpg.d/influxdata-archive.gpg > /dev/null \
     && echo 'deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive.gpg] https://repos.influxdata.com/debian stable main' \
-    | sudo tee /etc/apt/sources.list.d/influxdata.list
+    | tee /etc/apt/sources.list.d/influxdata.list
 
 - name: Update Apt
   ansible.builtin.apt:
@@ -20,14 +20,23 @@
     name: telegraf
     state: latest
 
-- name: Apply telegraf user acces to the access log file
-# Todo
-
-- name: Install configuration file
-  ansible.builtin.template:
-    src: conf.j2
-    dest: "{{ conf_path }}"
+- name: Ensure directory for Telegraf config exists
+  ansible.builtin.file:
+    path: "{{ conf_path | dirname }}"
+    state: directory
     owner: telegraf
     group: telegraf
-    mode: "0644"
-    
+    mode: "0750"
+
+- name: Ensure ACL package is installed (required for ansible.posix.acl)
+  ansible.builtin.apt:
+    name: acl
+    state: present
+   
+- name: Apply telegraf user acces to the access log file
+  ansible.posix.acl:
+    path: "{{access_log_path}}"
+    entity: telegraf
+    etype: user
+    permissions: r
+    state: present

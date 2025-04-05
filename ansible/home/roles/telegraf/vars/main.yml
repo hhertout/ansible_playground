@@ -1,3 +1,5 @@
-conf_path: /etc
-otel_gateway: http://localhost:443
+telegraf_usr_pwd: "bfdhkb6Nvcg5EcdNJ"
+
+conf_path: /busapps/telegraf/telegraf.conf
+otel_gateway: otel-grpc.neryolab.com:443
 access_log_path: /var/log/auth.log

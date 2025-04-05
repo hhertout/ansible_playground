@@ -5,6 +5,8 @@
 
 [[inputs.mem]]
 
+[[inputs.temp]]
+
 [[inputs.disk]]
   ignore_fs = ["tmpfs", "devtmpfs", "overlay"]
 
@@ -13,7 +15,7 @@
 [[inputs.net]]
 
 [[inputs.system]]
-  fieldpass = ["uptime", "load1", "load5", "load15"]
+  fieldinclude = ["uptime", "load1", "load5", "load15"]
 
 [[inputs.procstat]]
   pattern = "sshd"
@@ -26,10 +28,11 @@
   [[inputs.tail.tagpass]]
     log_level = ["info", "warn", "error"]
 
-  [[inputs.tail.parsing]]
-    data_format = "grok"
-    patterns = ["%{SYSLOGTIMESTAMP:timestamp} %{SYSLOGHOST:host} sshd\\[%{POSINT:pid}\\]: %{GREEDYDATA:message}"]
-
 [[outputs.opentelemetry]]
   service_address = "{{otel_gateway}}"
-  resource_attributes = { "host" = "$HOSTNAME", "job" = "telegraf", service = "$HOSTNAME" }
+  compression = "gzip"
+  insecure_skip_verify = true
+
+  [outputs.opentelemetry.attributes]
+    "job" = "telegraf"
+    "service" = "access-log"
