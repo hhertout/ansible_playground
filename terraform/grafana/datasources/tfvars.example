@@ -1,2 +1,0 @@
-grafana_auth = "user:pasword"
-grafana_url  = "https://grafana.url.com"
