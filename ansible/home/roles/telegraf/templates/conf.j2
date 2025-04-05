@@ -20,14 +20,6 @@
 [[inputs.procstat]]
   pattern = "sshd"
 
-[[inputs.tail]]
-  files = ["{{access_log_path}}"]
-  from_beginning = false
-  watch_method = "inotify"
-
-  [[inputs.tail.tagpass]]
-    log_level = ["info", "warn", "error"]
-
 [[outputs.opentelemetry]]
   service_address = "{{otel_gateway}}"
   compression = "gzip"
@@ -35,4 +27,3 @@
 
   [outputs.opentelemetry.attributes]
     "job" = "telegraf"
-    "service" = "access-log"
