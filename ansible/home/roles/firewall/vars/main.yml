@@ -1,0 +1,2 @@
+allow_kubernetes: true
+allow_http: false

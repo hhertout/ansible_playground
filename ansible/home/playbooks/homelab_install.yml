@@ -1,9 +1,9 @@
 - hosts: localhost
   gather_facts: true
   tasks:
-    - name: Generate SSH key locally
-      ansible.builtin.include_role:
-        name: ssh_key_gen
+    # - name: Generate SSH key locally
+    #   ansible.builtin.include_role:
+    #     name: ssh_key_gen
 
 - hosts: homelab
   become: true
@@ -31,3 +31,4 @@
 
   roles:
     - role: user_add
+    - role: firewall

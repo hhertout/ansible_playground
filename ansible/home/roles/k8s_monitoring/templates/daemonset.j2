@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: "{{namespace_name}}-alloy"
+  namespace: "{{namespace_name}}"
+spec:
+  selector:
+    matchLabels:
+      app: "{{namespace_name}}-alloy"
+  template:
+    metadata:
+      labels:
+        app: "{{namespace_name}}-alloy"
+    spec:
+      serviceAccountName: "{{namespace_name}}-sa"
+      containers:
+        - name: internal-alloy
+          image: grafana/alloy:latest
+          command:
+            - alloy
+            - run
+            - /etc/config.alloy
+          volumeMounts:
+            - name: config
+              mountPath: /etc/config.alloy
+              subPath: config.alloy
+      volumes:
+        - name: config
+          configMap:
+            name: "{{namespace_name}}-config"

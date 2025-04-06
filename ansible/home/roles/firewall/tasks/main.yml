@@ -1,0 +1,4 @@
+---
+- name: Install UFW
+  include_tasks: ubuntu.yml
+  when: ansible_distribution == "Ubuntu"

@@ -1,0 +1,50 @@
+---
+- name: Install ufw
+  become: true
+  ansible.builtin.apt:
+    name: ufw
+    state: present
+  register: check_install
+
+- name: Deny all incoming connections
+  become: true
+  ansible.builtin.command:
+    cmd: ufw default deny incoming
+
+- name: Allow all outgoing connections
+  become: true
+  ansible.builtin.command:
+    cmd: ufw default allow outgoing
+
+- name: Allow SSH
+  become: true
+  ansible.builtin.command:
+    cmd: ufw allow ssh
+
+- name: Allow HTTPS
+  become: true
+  ansible.builtin.command:
+    cmd: ufw allow https
+
+- name: Allow HTTP
+  become: true
+  ansible.builtin.command:
+    cmd: ufw allow http
+  when: allow_http
+
+- name: Allow port 6443
+  become: true
+  ansible.builtin.command:
+    cmd: ufw allow 6443/tcp
+  when: allow_kubernetes
+
+- name: Launch ufw
+  become: true
+  ansible.builtin.command:
+    cmd: ufw --force enable
+  when: check_install.changed
+
+- name: update ufw
+  become: true
+  ansible.builtin.command:
+    cmd: ufw reload

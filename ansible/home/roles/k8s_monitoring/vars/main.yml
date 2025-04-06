@@ -1,0 +1,2 @@
+namespace_name: internal-monitoring
+otel_gateway: http://mimir-service.dobsgbl0.svc.cluster.local:9009/api/v1/push
