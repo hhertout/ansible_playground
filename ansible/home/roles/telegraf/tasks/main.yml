@@ -77,24 +77,11 @@
     
     - name: Configure Telegraf systemd service
       become: true
-      ansible.builtin.copy:
+      ansible.builtin.template:
+        src: deamon.j2
         dest: /etc/systemd/system/telegraf.service
-        content: |
-          [Unit]
-          Description=Telegraf Data Collector
-          After=network.target
-
-          [Service]
-          User=telegraf
-          Group=telegraf
-          ExecStart=/usr/bin/telegraf --config {{ conf_path }}
-          Restart=on-failure
-          RestartForceExitStatus=SIGPIPE
-          KillMode=control-group
-
-          [Install]
-          WantedBy=multi-user.target
-          mode: '0644'
+        owner: root
+        group: root
         
     - name: Reload systemd daemon
       become: true

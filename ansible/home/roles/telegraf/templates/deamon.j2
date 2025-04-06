@@ -1,0 +1,15 @@
+[Unit]
+Description=Telegraf Data Collector
+After=network.target
+
+[Service]
+User=telegraf
+Group=telegraf
+ExecStart=/usr/bin/telegraf --config {{ conf_path }}
+Restart=on-failure
+RestartForceExitStatus=SIGPIPE
+KillMode=control-group
+
+[Install]
+WantedBy=multi-user.target
+mode: '0644'
