@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: "{{namespace_name}}-alloy"
+  name: "{{namespace_name}}-alloy-metrics"
   namespace: "{{namespace_name}}"
 spec:
   selector:
     matchLabels:
-      app: "{{namespace_name}}-alloy"
+      app: "{{namespace_name}}-alloy-metrics"
   template:
     metadata:
       labels:
-        app: "{{namespace_name}}-alloy"
+        app: "{{namespace_name}}-alloy-metrics"
     spec:
       serviceAccountName: "{{namespace_name}}-sa"
       containers:
-        - name: internal-alloy
+        - name: internal-alloy-metrics
           image: grafana/alloy:latest
           command:
             - alloy
@@ -27,4 +27,4 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: "{{namespace_name}}-config"
+            name: "{{namespace_name}}-metrics-config"

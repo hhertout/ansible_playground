@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{namespace_name}}-config"
+  name: "{{namespace_name}}-metrics-config"
   namespace: "{{namespace_name}}"
 data:
   config.alloy: |
@@ -44,6 +44,10 @@ data:
 
     prometheus.remote_write "default" {
       endpoint {
-        url = "{{otel_gateway}}"
+        url = "{{mimir_endpoint}}"
+
+        tls_config {
+            insecure_skip_verify = true
+        }
       }
     }

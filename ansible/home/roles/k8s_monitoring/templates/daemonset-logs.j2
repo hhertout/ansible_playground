@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: "{{namespace_name}}-alloy-logs"
+  namespace: "{{namespace_name}}"
+spec:
+  selector:
+    matchLabels:
+      app: "{{namespace_name}}-alloy-logs"
+  template:
+    metadata:
+      labels:
+        app: "{{namespace_name}}-alloy-logs"
+    spec:
+      serviceAccountName: "{{namespace_name}}-sa"
+      containers:
+        - name: internal-alloy-logs
+          image: grafana/alloy:latest
+          command:
+            - alloy
+            - run
+            - /etc/config.alloy
+          volumeMounts:
+            - name: config
+              mountPath: /etc/config.alloy
+              subPath: config.alloy
+            - name: varlogpods
+              mountPath: /var/log/pods
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: "{{namespace_name}}-logs-config"
+        - name: varlogpods
+          hostPath:
+            path: /var/log/pods
+
+

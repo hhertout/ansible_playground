@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{namespace_name}}-logs-config"
+  namespace: "{{namespace_name}}"
+data:
+  config.alloy: |
+    logging {
+        level = "info"
+        format = "logfmt"
+    }
+
+    discovery.kubernetes "pods" {
+        role = "pod"
+    }
+
+    discovery.relabel "k8s" {
+        targets = discovery.kubernetes.pods.targets
+
+        rule {
+            source_labels = ["__meta_kubernetes_namespace"]
+            target_label  = "namespace"
+        }
+
+        rule {
+            source_labels = ["__meta_kubernetes_pod_uid"]
+            target_label  = "pod_uid"
+        }
+
+        rule {
+            source_labels = ["__meta_kubernetes_pod_container_name"]
+            target_label  = "container_name"
+        }
+
+        rule {
+            source_labels = ["__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
+            target_label  = "__path__"
+            separator     = "/"
+            replacement   = "/var/log/pods/*$1/*.log"
+        }
+    }
+
+    local.file_match "pods" {
+        path_targets = discovery.relabel.k8s.output
+    }
+
+    loki.source.file "pods" {
+        targets = local.file_match.pods.targets
+        forward_to = [loki.write.endpoint.receiver]
+    }
+
+    loki.write "endpoint" {
+        endpoint {
+            url = "{{loki_endpoint}}"
+            tls_config {
+                insecure_skip_verify = true
+            }
+        }
+    }

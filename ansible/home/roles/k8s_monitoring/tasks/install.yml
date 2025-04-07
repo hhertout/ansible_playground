@@ -1,0 +1,61 @@
+- name: Apply namespace
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'namespace.j2') }}"
+    state: present
+    kubeconfig: "{{ kubeconfig_file_location }}"
+
+- name: Service account
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'service-account.j2') }}"
+    state: present
+    kubeconfig: "{{ kubeconfig_file_location }}"
+
+- name: Service account secret
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'secret.j2') }}"
+    state: present
+    kubeconfig: "{{ kubeconfig_file_location }}"
+
+- name: Retrieve token
+  ansible.builtin.command: "kubectl get secret {{namespace_name}}-token -n {{namespace_name}} -o jsonpath='{.data.token}'"
+  register: token_output
+
+- name: Set bearer token fact
+  ansible.builtin.set_fact:
+    bearer_token: "{{ token_output.stdout }}"
+
+- name: Cluster role
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'cluster-role.j2') }}"
+    state: present
+    kubeconfig: "{{ kubeconfig_file_location }}"
+
+- name: Cluster role binding
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'cr-binding.j2') }}"
+    state: present
+    kubeconfig: "{{ kubeconfig_file_location }}"
+
+- name: Config map metrics
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'configmap-metrics.j2') }}"
+    state: present
+    kubeconfig: "{{ kubeconfig_file_location }}"
+
+- name: Deployment metrics
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'daemonset-metrics.j2') }}"
+    state: present
+    kubeconfig: "{{ kubeconfig_file_location }}"
+
+- name: Config map logs
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'configmap-logs.j2') }}"
+    state: present
+    kubeconfig: "{{ kubeconfig_file_location }}"
+
+- name: Deployment logs
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'daemonset-logs.j2') }}"
+    state: present
+    kubeconfig: "{{ kubeconfig_file_location }}"
