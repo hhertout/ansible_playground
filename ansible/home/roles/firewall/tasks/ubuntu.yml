@@ -44,6 +44,17 @@
     cmd: ufw --force enable
   when: check_install.changed
 
+- name: Check ufw status
+  become: true
+  ansible.builtin.command:
+    cmd: ufw status verbose
+  register: ufw_status
+
+- name: Print ufw status
+  ansible.builtin.debug:
+    var: ufw_status.stdout_lines
+  when: ufw_status is defined
+
 - name: update ufw
   become: true
   ansible.builtin.command:
