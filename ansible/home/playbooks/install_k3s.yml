@@ -5,6 +5,15 @@
 
   roles:
     - role: install_k3s
+    
     - role: k8s_ingress
       vars:
         kind: nginx
+    
+    - role: k8s_user
+      vars:
+        user_name: neryo
+
+    - role: k8s_monitoring
+    
+    - role: k8s_cert_manager

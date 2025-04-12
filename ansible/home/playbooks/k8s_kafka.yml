@@ -1,0 +1,10 @@
+---
+- hosts: k8s_master
+  become: true
+  gather_facts: false
+
+  roles:
+    - role: k8s_install_kafka
+      when: install_kafka is defined and install_kafka | bool == true
+
+    - role: k8s_manage_kafka

@@ -1,0 +1,2 @@
+kind: install # install | clean | uninstall
+k3s_download_url: https://get.k3s.io

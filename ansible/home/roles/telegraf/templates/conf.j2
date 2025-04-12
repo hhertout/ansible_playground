@@ -1,3 +1,7 @@
+[global_tags]
+  "job" = "telegraf"
+  "env" = "{{ tag_env }}"
+
 [[inputs.cpu]]
   percpu = true
   totalcpu = true
@@ -28,6 +32,3 @@
   service_address = "{{otel_gateway}}"
   compression = "gzip"
   insecure_skip_verify = true
-
-  [outputs.opentelemetry.attributes]
-    "job" = "telegraf"

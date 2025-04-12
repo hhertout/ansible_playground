@@ -19,7 +19,29 @@
       include_tasks: ubuntu.yml
       when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
 
-  when: k3s_exists.rc != 0
+  when: k3s_exists.rc != 0 and kind == 'install'
+
+- name: Clean k3s
+  block:
+    - name: Stop k3s
+      become: true
+      ansible.builtin.sytemd:
+        name: k3s
+        state: stopped
+
+    - name: Remove containerd
+      become: true
+      ansible.builtin.command: "rm -rf /var/lib/rancher/k3s/agent/containerd"
+
+    - name: Restart k3s
+      become: true
+      ansible.builtin.sytemd:
+        name: k3s
+        state: started
+      
+    - name: Clean on Ubuntu & Debian
+
+  when: kind == 'clean'
 
 - name: Copy kubeconfig
   include_tasks: copy_connection.yml
