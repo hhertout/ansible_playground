@@ -1,0 +1,11 @@
+grafana_auth = ""
+grafana_url  = ""
+
+users = [
+  {
+    user_login    = ""
+    user_name     = ""
+    user_email    = ""
+    user_password = ""
+  }
+]

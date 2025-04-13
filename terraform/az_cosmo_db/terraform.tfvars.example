@@ -1,0 +1,4 @@
+subscription_id  = ""
+cosmodb_user     = ""
+cosmodb_password = ""
+cosmodb_db_name  = ""
