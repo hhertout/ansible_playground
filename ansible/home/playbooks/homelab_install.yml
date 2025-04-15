@@ -12,6 +12,11 @@
     - name: Check OS distribution
       ansible.builtin.debug:
         var: ansible_distribution
+    
+    - name: Update Apt
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 0 # force the update
 
     - name: Install base packages
       ansible.builtin.package:

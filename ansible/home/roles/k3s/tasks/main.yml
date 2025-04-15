@@ -25,7 +25,7 @@
   block:
     - name: Stop k3s
       become: true
-      ansible.builtin.sytemd:
+      ansible.builtin.systemd:
         name: k3s
         state: stopped
 
@@ -35,7 +35,7 @@
 
     - name: Restart k3s
       become: true
-      ansible.builtin.sytemd:
+      ansible.builtin.systemd:
         name: k3s
         state: started
       
@@ -45,3 +45,7 @@
 
 - name: Copy kubeconfig
   include_tasks: copy_connection.yml
+
+- name: Enable remote administration
+  include_tasks: enable_remote_admin.yml
+  when: enable_remote_access | bool

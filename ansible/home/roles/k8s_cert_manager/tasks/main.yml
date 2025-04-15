@@ -3,4 +3,5 @@
   when: kind is not defined or kind != "delete"
 
 - name: Uninstall cert manager
+  include_tasks: delete.yml
   when: kind is defined and kind == "delete"

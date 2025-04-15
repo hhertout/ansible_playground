@@ -1,0 +1,21 @@
+- name: Add public IP to k3s service
+  become: true
+  block:
+    - name: Edit the exec start line in k3s service
+      ansible.builtin.replace:
+        path: /etc/systemd/system/k3s.service
+        regexp: '^(ExecStart=.*?\\\n\s*server.*?)$'
+        replace: '\1 \\\n    --tls-san {{ ansible_host }}'
+        backup: yes
+
+    - name: Reload systemd to take into account the changes
+      command: systemctl daemon-reexec
+
+    - name: Reload systemd
+      command: systemctl daemon-reload
+
+    - name: Restart k3s daemon
+      systemd:
+        name: k3s
+        state: restarted
+        enabled: yes

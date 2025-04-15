@@ -1,4 +1,16 @@
 ---
+- name: Update Apt
+  become: true
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 0 # force the update
+
+- name: Install python3 kubernetes
+  become: true
+  ansible.builtin.package:
+    name: python3-kubernetes
+    state: present
+
 - name: Download and install k3s
   ansible.builtin.shell: "curl -sfL {{ k3s_download_url }} | sh -"
   ignore_errors: true

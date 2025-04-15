@@ -1,2 +1,4 @@
 kind: install # install | clean | uninstall
 k3s_download_url: https://get.k3s.io
+kubeconfig_file_name: home_cluster.yaml
+enable_remote_access: true

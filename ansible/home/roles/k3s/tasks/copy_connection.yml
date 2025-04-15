@@ -33,7 +33,7 @@
   become: true
   ansible.builtin.fetch:
     src: "/tmp/k3s.yaml"
-    dest: "~/.kube/home_cluster.yml"
+    dest: "~/.kube/{{kubeconfig_file_name}}"
     flat: true
 
 - name: Delete the kubeconfig
