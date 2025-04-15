@@ -11,4 +11,3 @@
     - role: k8s_monitoring
     - role: k8s_cert_manager
     - role: k8s_user
-      
