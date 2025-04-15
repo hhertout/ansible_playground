@@ -1,6 +1,27 @@
+resource "random_integer" "priority" {
+  min = 1
+  max = 1000
+}
+
 resource "azurerm_resource_group" "rg" {
   name     = var.rg_name
   location = "France Central"
+}
+
+resource "azapi_resource" "ssh_public_key" {
+  type      = "Microsoft.Compute/sshPublicKeys@2022-11-01"
+  name      = "azapi-key"
+  location  = azurerm_resource_group.rg.location
+  parent_id = azurerm_resource_group.rg.id
+}
+
+resource "azapi_resource_action" "ssh_key_pair" {
+  method                 = "POST"
+  type                   = "Microsoft.Compute/sshPublicKeys@2022-11-01"
+  resource_id            = azapi_resource.ssh_public_key.id
+  action                 = "generateKeyPair"
+  response_export_values = ["publicKey", "privateKey"]
+  depends_on             = [azapi_resource.ssh_public_key]
 }
 
 resource "azurerm_public_ip" "example" {
@@ -64,14 +85,13 @@ resource "azurerm_subnet_network_security_group_association" "nsg_binding" {
 }
 
 resource "azurerm_linux_virtual_machine" "vm_1_spot" {
-  name                = "lnx0001"
+  name                = "lnx0${random_integer.priority.result}"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   size                = "Standard_D2ls_v5"
 
   admin_username                  = var.vm_username
-  admin_password                  = var.vm_password
-  disable_password_authentication = false
+  disable_password_authentication = true
 
   network_interface_ids = [
     azurerm_network_interface.nic_main.id,
@@ -79,6 +99,11 @@ resource "azurerm_linux_virtual_machine" "vm_1_spot" {
 
   priority        = "Spot"
   eviction_policy = "Deallocate"
+
+  admin_ssh_key {
+    username   = var.vm_username
+    public_key = azapi_resource_action.ssh_key_pair.output.publicKey
+  }
 
   os_disk {
     caching              = "ReadWrite"
@@ -92,3 +117,6 @@ resource "azurerm_linux_virtual_machine" "vm_1_spot" {
     version   = "latest"
   }
 }
+
+# terraform output -raw private_key > ~/.ssh/id_rsa_azlab
+# chmod 600 ~/.ssh/id_rsa_azlab

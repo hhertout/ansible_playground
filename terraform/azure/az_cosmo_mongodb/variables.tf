@@ -1,3 +1,9 @@
+variable "rg_name" {
+  description = "Name of the resource group"
+  type        = string
+  default     = "rg-database"
+}
+
 variable "subscription_id" {
   description = "Azure subscription ID"
   type        = string

@@ -1,9 +1,9 @@
 resource "azurerm_resource_group" "rg" {
-  name     = "rg-cosmodb"
+  name     = var.rg_name
   location = "France Central"
 }
 
-resource "azurerm_cosmosdb_account" "db" {
+resource "azurerm_cosmosdb_account" "mongodb" {
   name                       = var.cosmodb_db_name
   location                   = azurerm_resource_group.rg.location
   resource_group_name        = azurerm_resource_group.rg.name
@@ -27,17 +27,17 @@ resource "azurerm_cosmosdb_account" "db" {
   }
 }
 
-resource "azurerm_cosmosdb_mongo_database" "mongo_db" {
+resource "azurerm_cosmosdb_mongo_database" "root" {
   name                = "root"
-  resource_group_name = azurerm_cosmosdb_account.db.resource_group_name
-  account_name        = azurerm_cosmosdb_account.db.name
+  resource_group_name = azurerm_cosmosdb_account.mongodb.resource_group_name
+  account_name        = azurerm_cosmosdb_account.mongodb.name
 }
 
 resource "azurerm_cosmosdb_mongo_collection" "example_collection" {
   name                = "my-collection"
-  resource_group_name = azurerm_cosmosdb_account.db.resource_group_name
-  account_name        = azurerm_cosmosdb_account.db.name
-  database_name       = azurerm_cosmosdb_mongo_database.mongo_db.name
+  resource_group_name = azurerm_cosmosdb_account.mongodb.resource_group_name
+  account_name        = azurerm_cosmosdb_account.mongodb.name
+  database_name       = azurerm_cosmosdb_mongo_database.root.name
 
   default_ttl_seconds = "777"
   shard_key           = "uniqueKey"
