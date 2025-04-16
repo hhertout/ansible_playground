@@ -8,6 +8,5 @@
     - role: k8s_ingress
       vars:
         kind: nginx
-    - role: k8s_monitoring
     - role: k8s_cert_manager
     - role: k8s_user

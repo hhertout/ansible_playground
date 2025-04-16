@@ -10,4 +10,3 @@
 - name: Debug installation status
   ansible.builtin.debug:
     var: cert_manager_pods.stdout_lines
-
