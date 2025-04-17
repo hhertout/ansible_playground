@@ -36,11 +36,6 @@
     state: present
     kubeconfig: "{{ kubeconfig_file_location }}"
 
-- name: Config map metrics
-  kubernetes.core.k8s:
-    definition: "{{ lookup('template', 'configmap-metrics.j2') }}"
-    state: present
-    kubeconfig: "{{ kubeconfig_file_location }}"
 
 - name: Deployment metrics
   kubernetes.core.k8s:
@@ -48,11 +43,33 @@
     state: present
     kubeconfig: "{{ kubeconfig_file_location }}"
 
+- name: Config map metrics
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'configmap-metrics.j2') }}"
+    state: present
+    kubeconfig: "{{ kubeconfig_file_location }}"
+  when: not enable_remote_otlp_exporter
+
+- name: Config map metrics (otlp)
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'otlp-configmap-metrics.j2') }}"
+    state: present
+    kubeconfig: "{{ kubeconfig_file_location }}"
+  when: enable_remote_otlp_exporter
+
 - name: Config map logs
   kubernetes.core.k8s:
     definition: "{{ lookup('template', 'configmap-logs.j2') }}"
     state: present
     kubeconfig: "{{ kubeconfig_file_location }}"
+  when: not enable_remote_otlp_exporter
+
+- name: Config map logs (otlp)
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'otlp-configmap-logs.j2') }}"
+    state: present
+    kubeconfig: "{{ kubeconfig_file_location }}"
+  when: enable_remote_otlp_exporter
 
 - name: Deployment logs
   kubernetes.core.k8s:

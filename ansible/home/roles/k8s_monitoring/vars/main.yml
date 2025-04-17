@@ -1,3 +1,11 @@
 namespace_name: internal-monitoring
+cluster_name: home
+tls_enabled: false
+
+# use for external routing
+enable_remote_otlp_exporter: true
+otlp_http_endpoint: https://otel-http.neryolab.com
+
+# use for internal routing
 mimir_endpoint: http://mimir-service.dobsgbl0.svc.cluster.local:9009/api/v1/push
 loki_endpoint: http://loki-service.dobsgbl0.svc.cluster.local:3100/loki/api/v1/push

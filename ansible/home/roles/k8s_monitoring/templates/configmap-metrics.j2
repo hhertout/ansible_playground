@@ -20,7 +20,7 @@ data:
 
     prometheus.scrape "cadvisor" {
         targets = discovery.kubernetes.nodes.targets
-        forward_to = [prometheus.remote_write.default.receiver]
+        forward_to = [prometheus.relabel.prom_rewrite.receiver]
 
         scheme = "https"
         metrics_path = "/metrics/cadvisor"
@@ -34,12 +34,20 @@ data:
 
     prometheus.scrape "pods" {
         targets    = discovery.kubernetes.k8s_pods.targets
-        forward_to = [prometheus.remote_write.default.receiver]
+        forward_to = [prometheus.relabel.prom_rewrite.receiver]
     }
 
     prometheus.scrape "kubelet" {
       targets = discovery.kubernetes.nodes.targets
-      forward_to = [prometheus.remote_write.default.receiver]
+      forward_to = [prometheus.relabel.prom_rewrite.receiver]
+    }
+
+    prometheus.relabel "prom_rewrite" {
+        rule {
+            target_label = "k8s_cluster"
+            replacement = "{{cluster_name}}"
+        }
+        forward_to = [prometheus.remote_write.default.receiver]
     }
 
     prometheus.remote_write "default" {
