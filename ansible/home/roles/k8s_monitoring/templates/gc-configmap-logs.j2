@@ -1,0 +1,113 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{namespace_name}}-logs-config"
+  namespace: "{{namespace_name}}"
+data:
+  config.alloy: |
+    logging {
+        level = "info"
+        format = "logfmt"
+    }
+
+    otelcol.receiver.loki "logs_receiver" {
+        output {
+            logs = [otelcol.processor.batch.otlp_batch.input]
+        }
+    }
+
+    otelcol.receiver.prometheus "metrics_receiver" {
+        output {
+            metrics = [otelcol.processor.batch.otlp_batch.input]
+        }
+    }
+
+    otelcol.processor.batch "otlp_batch" {
+        output {
+            metrics = [otelcol.exporter.otlphttp.default.input]
+            logs = [otelcol.exporter.otlphttp.default.input]
+        }
+    }
+
+    otelcol.auth.basic "grafana_cloud" {
+        username = "{{grafana_cloud.username}}"
+        password = "{{grafana_cloud.password}}"
+    } 
+
+    otelcol.exporter.otlphttp "default" {
+        client {
+            endpoint = "{{grafana_cloud.endpoint}}"
+            auth     = otelcol.auth.basic.grafana_cloud.handler
+        }
+    }
+
+    discovery.kubernetes "pods" {
+        role = "pod"
+    }
+
+    discovery.relabel "k8s" {
+        targets = discovery.kubernetes.pods.targets
+        
+        rule {
+            source_labels = ["__meta_kubernetes_namespace"]
+            target_label = "namespace"
+        }
+        
+        rule {
+            target_label = "k8s_cluster"
+            replacement = "{{cluster_name}}"
+        }
+        
+        rule {
+            source_labels = ["__meta_kubernetes_pod_uid"]
+            target_label = "pod_uid"
+        }
+        
+        rule {
+            source_labels = ["__meta_kubernetes_pod_container_name"]
+            target_label = "container_name"
+        }
+        
+        rule {
+            source_labels = ["__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
+            target_label = "__path__"
+            separator = "/"
+            replacement = "/var/log/pods/*$1/*.log"
+        }
+    }
+
+    local.file_match "pods" {
+        path_targets = discovery.relabel.k8s.output
+    }
+
+    loki.source.file "pods" {
+        targets = local.file_match.pods.targets
+        forward_to = [loki.process.convert_to_otlp.receiver]
+    }
+
+    loki.process "convert_to_otlp" {
+        forward_to = [otelcol.receiver.loki.logs_receiver.receiver]
+
+        stage.json {
+            expressions = {
+            timestamp = "time",
+            level     = "level",
+            message   = "msg",
+            }
+        }
+    }
+
+    prometheus.exporter.self "internal" {}
+
+    prometheus.scrape "self_scrape" {
+        targets = prometheus.exporter.self.internal.targets
+        forward_to = [prometheus.relabel.prom_rewrite.receiver]
+    }
+
+    prometheus.relabel "prom_rewrite" {
+        rule {
+            target_label = "k8s_cluster"
+            replacement = "{{cluster_name}}"
+        }
+        forward_to = [otelcol.receiver.prometheus.metrics_receiver.receiver]
+    }

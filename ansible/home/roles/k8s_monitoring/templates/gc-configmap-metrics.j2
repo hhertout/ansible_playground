@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{namespace_name}}-metrics-config"
+  namespace: "{{namespace_name}}"
+data:
+  config.alloy: |
+    logging {
+        level = "info"
+        format = "logfmt"
+    }
+
+    otelcol.receiver.prometheus "receiver" {
+        output {
+            metrics = [otelcol.processor.batch.metrics.input]
+        }
+    }
+
+    otelcol.processor.batch "metrics" {
+        output {
+            metrics = [otelcol.exporter.otlphttp.default.input]
+        }
+    }
+
+    otelcol.auth.basic "grafana_cloud" {
+        username = "{{grafana_cloud.username}}"
+        password = "{{grafana_cloud.password}}"
+    } 
+
+    otelcol.exporter.otlphttp "default" {
+        client {
+            endpoint = "{{grafana_cloud.endpoint}}"
+            auth     = otelcol.auth.basic.grafana_cloud.handler
+        }
+    }
+
+    prometheus.exporter.self "internal" {}
+
+    prometheus.scrape "self_scrape" {
+        targets = prometheus.exporter.self.internal.targets
+        forward_to = [prometheus.relabel.prom_rewrite.receiver]
+    }
+
+    discovery.kubernetes "nodes" {
+        role = "node"
+    }
+
+    discovery.kubernetes "k8s_pods" {
+        role = "pod"
+    }
+
+    prometheus.scrape "cadvisor" {
+        targets = discovery.kubernetes.nodes.targets
+        forward_to = [prometheus.relabel.prom_rewrite.receiver]
+        scheme = "https"
+        metrics_path = "/metrics/cadvisor"
+        bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+        
+        tls_config {
+            insecure_skip_verify = true
+        }
+    }
+
+    prometheus.scrape "pods" {
+        targets = discovery.kubernetes.k8s_pods.targets
+        forward_to = [prometheus.relabel.prom_rewrite.receiver]
+    }
+
+    prometheus.scrape "kubelet" {
+        targets = discovery.kubernetes.nodes.targets
+        forward_to = [prometheus.relabel.prom_rewrite.receiver]
+    }
+
+    prometheus.relabel "prom_rewrite" {
+        rule {
+            target_label = "k8s_cluster"
+            replacement = "{{cluster_name}}"
+        }
+        forward_to = [otelcol.receiver.prometheus.receiver.receiver]
+    }
