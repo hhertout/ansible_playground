@@ -12,7 +12,7 @@ data:
 
     otelcol.receiver.loki "logs_receiver" {
         output {
-            logs = [otelcol.processor.batch.otlp_batch.input]
+            logs = [otelcol.processor.attributes.promote_labels.input]
         }
     }
 
@@ -21,6 +21,31 @@ data:
             metrics = [otelcol.processor.batch.otlp_batch.input]
         }
     }
+
+    otelcol.processor.attributes "promote_labels" {
+        action {
+            action = "insert"
+            from_attribute = "namespace"
+            key = "namespace"
+        }
+
+        action {
+            action = "insert"
+            from_attribute = "container_name"
+            key = "container_name"
+        }
+
+        action {
+            action = "insert"
+            from_attribute = "k8s_cluster"
+            key = "k8s_cluster"
+        }
+
+        output {
+            logs = [otelcol.processor.batch.otlp_batch.input]
+        }
+    }
+
 
     otelcol.processor.batch "otlp_batch" {
         output {
@@ -88,11 +113,12 @@ data:
     loki.process "convert_to_otlp" {
         forward_to = [otelcol.receiver.loki.logs_receiver.receiver]
 
-        stage.json {
-            expressions = {
-            timestamp = "time",
-            level     = "level",
-            message   = "msg",
+        stage.labels {
+            values = {
+                namespace      = "namespace",
+                container_name = "container_name",
+                pod_uid        = "pod_uid",
+                k8s_cluster    = "k8s_cluster",
             }
         }
     }

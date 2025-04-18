@@ -7,6 +7,7 @@ enable_remote_otlp_exporter: false
 otlp_http_endpoint: https://otel-http.neryolab.com
 
 enable_grafana_cloud_exporter: true
+# configs are located in group_vars/all
 
 # use for internal routing
 mimir_endpoint: http://mimir-service.dobsgbl0.svc.cluster.local:9009/api/v1/push
