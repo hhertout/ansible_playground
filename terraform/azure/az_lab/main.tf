@@ -88,7 +88,7 @@ resource "azurerm_linux_virtual_machine" "vm_1_spot" {
   name                = "lnx0${random_integer.priority.result}"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
-  size                = "Standard_D2ls_v5"
+  size                = "Standard_B2as_v2"
 
   admin_username                  = var.vm_username
   disable_password_authentication = true
