@@ -1,3 +1,9 @@
+variable "subscription_id" {
+  description = "Subscription ID"
+  type        = string
+  sensitive   = true
+}
+
 variable "rg_name" {
   description = "Name of the resource group"
   type        = string
@@ -8,12 +14,6 @@ variable "rg_location" {
   description = "Location of the resource group"
   type        = string
   default     = "France Central"
-}
-
-variable "subscription_id" {
-  description = "Subscription ID"
-  type        = string
-  sensitive   = true
 }
 
 variable "container_registry_name" {

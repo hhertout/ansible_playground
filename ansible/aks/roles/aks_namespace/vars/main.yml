@@ -1,0 +1,8 @@
+namespace_name: dobsgbl0
+user_name: neryo
+limit_cpu: "4"
+limit_memory: "4Gi"
+limit_pods: "20"
+requests_cpu: "2"
+requests_memory: "2Gi"
+requests_storage: "5Gi"

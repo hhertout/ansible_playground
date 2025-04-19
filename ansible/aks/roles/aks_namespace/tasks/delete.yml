@@ -1,0 +1,29 @@
+- name: Delete namespace
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'namespace.j2') }}"
+    state: absent
+    kubeconfig: "{{ kubeconfig_file_location }}"
+
+- name: Delete namespace quotas
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'namespace-quota.j2') }}"
+    state: absent
+    kubeconfig: "{{ kubeconfig_file_location }}"
+
+- name: Apply namespace limit range
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'limit-range.j2') }}"
+    state: absent
+    kubeconfig: "{{ kubeconfig_file_location }}"
+
+- name: Delete role
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'role.j2') }}"
+    state: absent
+    kubeconfig: "{{ kubeconfig_file_location }}"
+
+- name: Delete role binding
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'role-binding.j2') }}"
+    state: absent
+    kubeconfig: "{{ kubeconfig_file_location }}"

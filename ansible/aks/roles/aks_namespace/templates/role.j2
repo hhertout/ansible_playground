@@ -1,0 +1,36 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{user_name}}-role
+  namespace: {{namespace_name}}
+rules:
+  - apiGroups: [""]
+    resources: ["*"]
+    verbs: ["*"]
+  - apiGroups: ["apps"]
+    resources: ["*"]
+    verbs: ["*"]
+  - apiGroups: ["batch"]
+    resources: ["*"]
+    verbs: ["*"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["*"]
+    verbs: ["*"]
+  - apiGroups: ["autoscaling"]
+    resources: ["*"]
+    verbs: ["*"]
+  - apiGroups: ["middlewares"]
+    resources: ["*"]
+    verbs: ["*"]
+  - apiGroups: ["metrics.k8s.io"]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  - apiGroups: ["cert-manager.io"]
+    resources: ["certificates", "certificaterequests", "issuers"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["discovery.k8s.io"]
+    resources: ["endpointslices"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["kafka.strimzi.io"]
+    resources: ["kafkas", "kafkatopics", "kafkaconnects", "kafkamirrormakers", "kafkabridges", "kafkaconnector", "kafkamirrormaker2s"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]

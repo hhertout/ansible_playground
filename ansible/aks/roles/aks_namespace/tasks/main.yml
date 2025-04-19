@@ -1,0 +1,14 @@
+- name: Assert vars are defined
+  ansible.builtin.assert:
+    that:
+      - namespace_name is defined
+      - user_name is defined
+    msg: Mandatory vars are not defined
+
+- name: Create namespace
+  include_tasks: create.yml
+  when: not action is defined or action != "delete"
+
+- name: Delete namespace
+  include_tasks: delete.yml
+  when: action is defined and action == "delete"

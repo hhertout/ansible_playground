@@ -1,0 +1,11 @@
+- name: Apply user service account
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'user-service-account.j2') }}"
+    kubeconfig: "{{ kubeconfig_file_location }}"
+    state: absent
+
+- name: Apply user secret
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'user-secret.j2') }}"
+    state: absent
+    kubeconfig: "{{ kubeconfig_file_location }}"

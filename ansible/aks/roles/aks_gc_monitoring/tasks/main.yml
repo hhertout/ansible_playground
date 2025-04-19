@@ -1,0 +1,8 @@
+---
+- name: Deploy
+  include_tasks: deploy.yml
+  when: kind == "install"
+
+- name: Remove
+  include_tasks: remove.yml
+  when: kind == "delete"

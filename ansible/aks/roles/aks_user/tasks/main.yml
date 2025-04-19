@@ -1,0 +1,14 @@
+- name: Assert vars are defined
+  ansible.builtin.assert:
+    that:
+      - user_name is defined
+      - kubeconfig_file_location is defined
+    msg: Mandatory vars are not defined
+
+- name: Create user
+  include_tasks: create.yml
+  when: not action is defined or action != "delete"
+
+- name: Delete user
+  include_tasks: delete.yml
+  when: action is defined and action == "delete"
