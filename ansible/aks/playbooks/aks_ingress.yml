@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  connection: local
+  become: false
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: "{{ lookup('env', 'HOME') + '/.ansible_venv/bin/python' }}"
+  roles:
+    - role: aks_ingress_controller

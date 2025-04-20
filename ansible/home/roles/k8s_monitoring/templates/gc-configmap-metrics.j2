@@ -34,13 +34,6 @@ data:
         }
     }
 
-    prometheus.exporter.self "internal" {}
-
-    prometheus.scrape "self_scrape" {
-        targets = prometheus.exporter.self.internal.targets
-        forward_to = [prometheus.relabel.prom_rewrite.receiver]
-    }
-
     discovery.kubernetes "nodes" {
         role = "node"
     }

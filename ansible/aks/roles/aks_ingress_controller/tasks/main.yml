@@ -1,0 +1,7 @@
+- name: Install Ingress Controller
+  include_tasks: install.yml
+  when: kind is not defined or kind != "delete"
+
+- name: Uninstall Ingress Controller
+  include_tasks: delete.yml
+  when: kind is defined and kind == "delete"

@@ -1,0 +1,14 @@
+---
+- name: Add ingress-nginx repo
+  kubernetes.core.helm_repository:
+    name: ingress-nginx
+    repo_url: https://kubernetes.github.io/ingress-nginx
+
+- name: Install ingress-nginx via Helm
+  kubernetes.core.helm:
+    kubeconfig: "{{ aks_kubeconfig }}"
+    name: ingress-nginx
+    chart_ref: ingress-nginx/ingress-nginx
+    release_namespace: ingress-nginx
+    create_namespace: true
+    state: present
