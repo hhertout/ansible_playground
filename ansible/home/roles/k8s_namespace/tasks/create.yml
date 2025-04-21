@@ -33,3 +33,10 @@
     definition: "{{ lookup('template', 'role-binding.j2') }}"
     state: present
     kubeconfig: "{{ kubeconfig_file_location }}"
+
+- name: Apply secret registry credentials
+  when: enable_secret_registry
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'secret-registry.j2') }}"
+    kubeconfig: "{{ kubeconfig_file_location }}"
+    state: present

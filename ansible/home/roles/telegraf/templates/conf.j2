@@ -1,6 +1,5 @@
 [global_tags]
   "job" = "telegraf"
-  "env" = "{{ tag_env }}"
 
 [[inputs.cpu]]
   percpu = true
@@ -16,10 +15,8 @@
 
 [[inputs.diskio]]
 
-[[inputs.net]]
-
 [[inputs.system]]
-  fieldinclude = ["uptime", "load1", "load5", "load15"]
+  fieldinclude = ["uptime"]
 
 [[inputs.processes]]
 

@@ -7,3 +7,4 @@
     ansible_python_interpreter: "{{ lookup('env', 'HOME') + '/.ansible_venv/bin/python' }}"
   roles:
     - role: aks_cert_manager
+    - role: aks_ingress_controller

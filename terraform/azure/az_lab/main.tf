@@ -120,3 +120,4 @@ resource "azurerm_linux_virtual_machine" "vm_1_spot" {
 
 # terraform output -raw private_key > ~/.ssh/id_rsa_azlab
 # chmod 600 ~/.ssh/id_rsa_azlab
+# ssh -i ~/.ssh/id_rsa_azlab <username>@<public_ip>
