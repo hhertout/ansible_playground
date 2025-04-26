@@ -17,9 +17,10 @@ resource "azurerm_kubernetes_cluster" "example" {
   dns_prefix          = var.aks_dns_prefix
 
   default_node_pool {
-    name       = var.node_pool_name
-    node_count = var.node_pool_count
-    vm_size    = "standard_B2als_v2"
+    name                 = var.node_pool_name
+    node_count           = var.node_pool_count
+    vm_size              = "standard_B2als_v2"
+    auto_scaling_enabled = false
   }
 
   identity {
