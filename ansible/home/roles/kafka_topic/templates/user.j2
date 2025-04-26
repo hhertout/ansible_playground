@@ -12,13 +12,13 @@ spec:
     type: simple
     acls:
 {% if kafka_user_acls is defined %}
-{% for topic in kafka_user_acls %}
+{% for acls in kafka_user_acls %}
       - resource:
-          type: {{ topic.resource.type }}
-          name: {{ topic.resource.name }}
-          patternType: {{ topic.resource.patternType }}
+          type: {{ acls.resource.type }}
+          name: {{ acls.resource.name }}
+          patternType: {{ acls.resource.patternType }}
         operations:
-{% for operation in topic.operations %}
+{% for operation in acls.operations %}
           - {{ operation }}
 {% endfor %}
 {% endfor %}
