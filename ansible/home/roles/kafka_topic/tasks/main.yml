@@ -20,7 +20,7 @@
 
 - name: Set ACLS fact
   ansible.builtin.set_fact:
-    kafka_user_acls: "{{kafka_user.resources[0].spec.authorization.acls}}"
+    kafka_user_acls: "{{ kafka_user.resources[0].spec.authorization.acls }}"
 
 - name: Debug User ACLS
   debug:
