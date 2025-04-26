@@ -1,0 +1,42 @@
+- name: Assert vars
+  ansible.builtin.assert:
+    that:
+      - kafka_username is defined
+      - namespace_name is defined
+      - kubeconfig_file_location is defined
+      - kafka_topic_name is defined
+      - kafka_cluster_name is defined
+    msg: Mandatory vars are not defined
+
+- name: Add Kafka User
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'user.j2') }}"
+    namespace: "{{ namespace_name }}"
+    state: present
+    kubeconfig: "{{ kubeconfig_file_location }}"
+
+
+- name: Wait for KafkaUser Secret to be created
+  kubernetes.core.k8s_info:
+    kind: Secret
+    namespace: "{{ namespace_name }}"
+    name: "{{ kafka_username }}"
+    kubeconfig: "{{ kubeconfig_file_location }}"
+  register: kafka_user_secret
+  until: kafka_user_secret.api_found
+  retries: 10
+  delay: 3
+
+- name: Decode KafkaUser credentials
+  set_fact:
+    kafka_user_credentials:
+      username: "{{ kafka_username }}"
+      password: "{{ kafka_user_secret.resources[0].data.password | b64decode }}"
+
+- name: Show user value
+  ansible.builtin.debug:
+    var: kafka_user_credentials.username
+
+- name: Show password value
+  ansible.builtin.debug:
+    var: kafka_user_credentials.password

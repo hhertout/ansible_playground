@@ -1,0 +1,52 @@
+- name: Assert vars
+  ansible.builtin.assert:
+    that:
+      - kafka_username is defined
+      - namespace_name is defined
+      - kubeconfig_file_location is defined
+      - kafka_topic_name is defined
+      - kafka_cluster_name is defined
+    msg: Mandatory vars are not defined
+
+- name: Check if user exist
+  kubernetes.core.k8s_info:
+    api_version: kafka.strimzi.io/v1beta2
+    kind: KafkaUser
+    namespace: "{{namespace_name}}"
+    name: "{{kafka_username}}"
+    kubeconfig: "{{ kubeconfig_file_location }}"
+  register: kafka_user
+  failed_when: not kafka_user.api_found
+
+- name: Set ACLS fact
+  ansible.builtin.set_fact:
+    kafka_user_acls: "{{kafka_user.resources[0].spec.authorization.acls}}"
+
+- name: Debug User ACLS
+  debug:
+    var: kafka_user_acls
+
+- name: Add Kafka Topic
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'topic.j2') }}"
+    namespace: "{{ k8s_namespace }}"
+    state: present
+    kubeconfig: "{{ kubeconfig_file_location }}"
+
+# TODO: Check if topic is already present - delete the old one and update by the new one
+
+- name: Check if topic is already present in acls
+  ansible.builtin.set_fact:
+    topic_already_exist: "{{ true if kafka_topic_name in (kafka_user_acls | json_query('[*].resource.name')) else false }}"
+
+- name: Filter acls to exclude existing topic
+  ansible.builtin.set_fact:
+    kafka_user_acls: "{{ kafka_user_acls | rejectattr('resource.name', 'equalto', kafka_topic_name) | list }}"
+  when: topic_already_exist | bool
+
+- name: Update user ACTL
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'user.j2') }}"
+    namespace: "{{ k8s_namespace }}"
+    state: present
+    kubeconfig: "{{ kubeconfig_file_location }}"

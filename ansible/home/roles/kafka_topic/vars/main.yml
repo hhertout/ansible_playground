@@ -1,0 +1,12 @@
+namespace_name: kafka
+kafka_cluter_name: kafka-cluster
+kafka_username: neryo
+
+kafka_topic_name: test-topic
+topic_partition_nb: 3
+topic_replicas_nb: 1
+topic_retention_ms: 7200000
+topic_segment_bytes: 1073741824
+
+acls_read: true
+acls_write: true

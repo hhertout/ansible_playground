@@ -4,7 +4,9 @@
   gather_facts: false
 
   roles:
-    - role: k8s_install_kafka
+    - role: kafka_install
       when: install_kafka is defined and install_kafka | bool == true
 
-    - role: k8s_manage_kafka
+    - role: kafka_cluster
+    - role: kafka_create_user
+    - role: kafka_topic

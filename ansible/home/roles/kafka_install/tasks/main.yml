@@ -1,4 +1,4 @@
 ---
-- name: Install kafka with streamiz
+- name: Install kafka with strimzi
   become: true
   ansible.builtin.shell: "kubectl create -f 'https://strimzi.io/install/latest?namespace={{k8s_namespace}}' -n {{k8s_namespace}}"

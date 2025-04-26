@@ -1,3 +1,0 @@
-k8s_namespace: dkfkgbl0
-kafka_cluter_name: kafka-cluster
-cert_manager_issuer: letsencrypt-issuer

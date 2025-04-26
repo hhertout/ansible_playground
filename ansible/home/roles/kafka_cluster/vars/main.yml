@@ -1,0 +1,2 @@
+k8s_namespace: kafka
+kafka_cluter_name: kafka-cluster
