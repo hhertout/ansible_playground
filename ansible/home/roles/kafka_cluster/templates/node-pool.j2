@@ -1,7 +1,7 @@
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaNodePool
 metadata:
-  name: dual-role
+  name: kafka-node-pool
   namespace: "{{k8s_namespace}}"
   labels:
     strimzi.io/cluster: "{{kafka_cluter_name}}"
@@ -15,6 +15,6 @@ spec:
     volumes:
       - id: 0
         type: persistent-claim
-        size: 2Gi
+        size: 5Gi
         deleteClaim: false
         kraftMetadata: shared

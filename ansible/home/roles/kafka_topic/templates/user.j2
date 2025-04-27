@@ -9,7 +9,6 @@ spec:
   authentication:
     type: scram-sha-512
   authorization:
-    type: simple
     acls:
 {% if kafka_user_acls is defined %}
 {% for acls in kafka_user_acls %}

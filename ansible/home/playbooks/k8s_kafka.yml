@@ -8,14 +8,14 @@
       when: install_kafka is defined and install_kafka | bool == true
 
     - role: kafka_cluster
-    - role: kafka_create_user
     - role: kafka_topic
+    #- role: kafka_create_user
 
-  tasks:
-    - name: Get user name
-      ansible.builtin.debug:
-        var: kafka_user_credentials.username
-
-    - name: Get user password
-      ansible.builtin.debug:
-        var: kafka_user_credentials.password
+  #tasks:
+  #  - name: Get user name
+  #    ansible.builtin.debug:
+  #      var: kafka_user_credentials.username
+#
+  #  - name: Get user password
+  #    ansible.builtin.debug:
+  #      var: kafka_user_credentials.password

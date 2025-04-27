@@ -1,5 +1,5 @@
 namespace_name: kafka
-kafka_cluter_name: kafka-cluster
+kafka_cluster_name: kafka-cluster
 kafka_username: neryo
 
 kafka_topic_name: test-topic
