@@ -10,3 +10,12 @@
     - role: kafka_cluster
     - role: kafka_create_user
     - role: kafka_topic
+
+  tasks:
+    - name: Get user name
+      ansible.builtin.debug:
+        var: kafka_user_credentials.username
+
+    - name: Get user password
+      ansible.builtin.debug:
+        var: kafka_user_credentials.password

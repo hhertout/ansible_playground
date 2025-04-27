@@ -1,3 +1,4 @@
+---
 - name: Assert vars
   ansible.builtin.assert:
     that:
@@ -27,16 +28,8 @@
   retries: 10
   delay: 3
 
-- name: Decode KafkaUser credentials
-  set_fact:
+- name: Set facts KafkaUser credentials
+  ansible.builtin.set_fact:
     kafka_user_credentials:
       username: "{{ kafka_username }}"
       password: "{{ kafka_user_secret.resources[0].data.password | b64decode }}"
-
-- name: Show user value
-  ansible.builtin.debug:
-    var: kafka_user_credentials.username
-
-- name: Show password value
-  ansible.builtin.debug:
-    var: kafka_user_credentials.password
