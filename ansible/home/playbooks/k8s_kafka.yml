@@ -5,8 +5,6 @@
 
   roles:
     - role: kafka_install
-      when: install_kafka is defined and install_kafka | bool == true
-
     - role: kafka_cluster
     - role: kafka_topic
     #- role: kafka_create_user
