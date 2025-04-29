@@ -1,8 +1,9 @@
 ---
 - name: Install kafka with strimzi
   become: true
-  ansible.builtin.shell: "kubectl create -f 'https://strimzi.io/install/latest?namespace={{k8s_namespace}}' -n {{k8s_namespace}}"
+  ansible.builtin.shell: "kubectl create -f 'https://strimzi.io/install/latest?namespace={{namespace_name}}' -n {{namespace_name}}"
   when: not kind is defined or kind == 'install'
+  ignore_errors: true
 
 - name: Streamzi clean uninstall
   become: true
