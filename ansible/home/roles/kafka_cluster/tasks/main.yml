@@ -1,13 +1,6 @@
 ---
 - name: Apply node-pool
   kubernetes.core.k8s:
-    definition: "{{ lookup('template', 'roles.j2') }}"
-    namespace: "{{ k8s_namespace }}"
-    state: present
-    kubeconfig: "{{ kubeconfig_file_location }}"
-
-- name: Apply node-pool
-  kubernetes.core.k8s:
     definition: "{{ lookup('template', 'node-pool.j2') }}"
     namespace: "{{ k8s_namespace }}"
     state: present
@@ -20,41 +13,44 @@
     state: present
     kubeconfig: "{{ kubeconfig_file_location }}"
 
-- name: Get cluster cert
-  kubernetes.core.k8s_info:
-    kind: Secret
-    namespace: "{{namespace_name}}"
-    name: kafka-cluster-cluster-ca-cert
-    kubeconfig: "{{ kubeconfig_file_location }}"
-  register: kafka_ca_cert_secret
+#- name: Get cluster cert
+#  kubernetes.core.k8s_info:
+#    kind: Secret
+#    namespace: "{{namespace_name}}"
+#    name: kafka-cluster-cluster-ca-cert
+#    kubeconfig: "{{ kubeconfig_file_location }}"
+#  register: kafka_ca_cert_secret
+#  retries: 5
+#  delay: 10
+#  until: kafka_ca_cert_secret is defined
+#
+#- name: Set cacert fact
+#  ansible.builtin.set_fact:
+#    kafka_ca_cert: '{{ kafka_ca_cert_secret.resources[0].data["ca.crt"] | b64decode }}'
 
-- name: Set cacert fact
-  ansible.builtin.set_fact:
-    kafka_ca_cert: '{{ kafka_ca_cert_secret.resources[0].data["ca.crt"] | b64decode }}'
-
-- name: Create dest folder
-  delegate_to: localhost
-  become: false
-  run_once: true
-  ansible.builtin.file:
-    path: "../certs"
-    state: directory
-    mode: '0700'
-
-- name: Save Kafka cacert
-  delegate_to: localhost
-  become: false
-  run_once: true
-  copy:
-    content: "ca.crt"
-    dest: "../certs/.gitignore"
-    mode: '0600'
-
-- name: Save Kafka cacert
-  delegate_to: localhost
-  become: false
-  run_once: true
-  copy:
-    content: "{{ kafka_ca_cert }}"
-    dest: "../certs/ca.crt"
-    mode: '0600'
+#- name: Create dest folder
+#  delegate_to: localhost
+#  become: false
+#  run_once: true
+#  ansible.builtin.file:
+#    path: "../certs"
+#    state: directory
+#    mode: '0700'
+#
+#- name: Save Kafka cacert
+#  delegate_to: localhost
+#  become: false
+#  run_once: true
+#  copy:
+#    content: "ca.crt"
+#    dest: "../certs/.gitignore"
+#    mode: '0600'
+#
+#- name: Save Kafka cacert
+#  delegate_to: localhost
+#  become: false
+#  run_once: true
+#  copy:
+#    content: "{{ kafka_ca_cert }}"
+#    dest: "../certs/ca.crt"
+#    mode: '0600'

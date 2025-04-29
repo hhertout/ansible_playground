@@ -1,7 +1,7 @@
 apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
-  name: "{{kafka_cluter_name}}"
+  name: my-cluster
   annotations:
     strimzi.io/node-pools: enabled
     strimzi.io/kraft: enabled
@@ -19,9 +19,13 @@ spec:
         type: internal
         tls: true
       - name: external
-        port: 9094
-        tls: false
+        port: 9095
         type: nodeport
+        tls: false
+        configuration:
+          brokers:
+            - broker: 0
+              advertisedHost: {{ bootstrap_host }}
     config:
       offsets.topic.replication.factor: 1
       transaction.state.log.replication.factor: 1

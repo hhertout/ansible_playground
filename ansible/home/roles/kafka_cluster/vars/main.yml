@@ -1,2 +1,6 @@
 k8s_namespace: kafka
 kafka_cluter_name: kafka-cluster
+
+bootstrap_host: kafka.neryolab.com
+
+storage_size: 10Gi

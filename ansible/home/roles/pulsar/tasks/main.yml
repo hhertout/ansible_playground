@@ -1,0 +1,14 @@
+- name: Get helm repository
+  kubernetes.core.helm_repository:
+    name: apache
+    repo_url: https://pulsar.apache.org/charts
+
+- name: Install Pulsar via Helm
+  kubernetes.core.helm:
+    kubeconfig: "{{ kubeconfig_file_location }}"
+    release_namespace: "{{ namespace_name }}"
+    name: pulsar
+    chart_ref: apache/pulsar
+    update_repo_cache: true
+    values: "{{ lookup('template', 'values.j2') | from_yaml }}"
+    state: absent

@@ -1,0 +1,7 @@
+- name: Delete kafka resources
+  ansible.builtin.shell: |
+    kubectl -n {{namespace_name}} delete $(kubectl get strimzi -o name -n {{namespace_name}})
+
+- name: Delete Strimzi comps
+  ansible.builtin.shell: |
+    kubectl -n kafka delete -f 'https://strimzi.io/install/latest?namespace={{namespace_name}}'
