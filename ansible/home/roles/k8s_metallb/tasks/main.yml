@@ -1,0 +1,13 @@
+- name: Install MetalLB
+  ansible.builtin.shell: |
+    kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.14.9/config/manifests/metallb-native.yaml
+
+- name: Apply MetalLB config
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'config.j2') }}"
+    state: present
+    kubeconfig: "{{ kubeconfig_file_location }}"
+  register: metallb_apply_result
+  until: metallb_apply_result is succeeded
+  retries: 10
+  delay: 10

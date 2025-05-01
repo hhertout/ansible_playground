@@ -7,3 +7,4 @@
     - role: k8s_ingress
       vars:
         kind: nginx
+    - role: k8s_metallb
