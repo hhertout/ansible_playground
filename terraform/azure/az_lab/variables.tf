@@ -20,3 +20,20 @@ variable "vm_password" {
   type        = string
 }
 
+variable "vm_autoshutdown_enabled" {
+  description = "enabling the automatic shutdown of the vm"
+  type        = bool
+  default     = false
+}
+
+variable "vm_autoshutdown_notification_enabled" {
+  description = "enabling the notification when the vm shutdown"
+  type        = bool
+  default     = false
+}
+
+variable "vm_autoshutdown_webhook" {
+  description = "webhook url"
+  type        = string
+  default     = ""
+}

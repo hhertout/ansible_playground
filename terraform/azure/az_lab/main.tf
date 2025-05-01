@@ -118,6 +118,22 @@ resource "azurerm_linux_virtual_machine" "vm_1_spot" {
   }
 }
 
+resource "azurerm_dev_test_global_vm_shutdown_schedule" "example" {
+  virtual_machine_id = azurerm_linux_virtual_machine.vm_1_spot.id
+  location           = azurerm_resource_group.rg.location
+  enabled            = var.vm_autoshutdown_enabled
+
+  daily_recurrence_time = "2330"
+  // for timezone settings = https://jackstromberg.com/2017/01/list-of-time-zones-consumed-by-azure/
+  timezone = "Romance Standard Time"
+
+  notification_settings {
+    enabled         = var.vm_autoshutdown_notification_enabled
+    time_in_minutes = "60"
+    webhook_url     = var.vm_autoshutdown_webhook
+  }
+}
+
 # terraform output -raw private_key > ~/.ssh/id_rsa_azlab
 # chmod 600 ~/.ssh/id_rsa_azlab
 # ssh -i ~/.ssh/id_rsa_azlab <username>@<public_ip>
