@@ -1,0 +1,6 @@
+- name: Add Rabbitmq Queue
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'queue.j2') }}"
+    namespace: "{{ k8s_namespace }}"
+    state: present
+    kubeconfig: "{{ kubeconfig_file_location }}"

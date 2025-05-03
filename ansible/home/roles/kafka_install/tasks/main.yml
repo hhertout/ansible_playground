@@ -6,6 +6,5 @@
   ignore_errors: true
 
 - name: Streamzi clean uninstall
-  become: true
-  ansible.builtin.include_task: delete.yml
+  ansible.builtin.include_tasks: delete.yml
   when: kind is defined and kind == "remove"

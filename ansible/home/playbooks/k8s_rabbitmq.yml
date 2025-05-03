@@ -1,0 +1,9 @@
+---
+- hosts: k8s_master
+  become: true
+  gather_facts: false
+
+  roles:
+    #- role: rabbitmq_install
+    - role: rabbitmq_cluster
+    - role: rabbitmq_queue

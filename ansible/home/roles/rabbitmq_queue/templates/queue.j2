@@ -1,0 +1,11 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: Queue
+metadata:
+  name: test
+spec:
+  name: {{ queue_name }}
+  type: quorum
+  durable: true
+  rabbitmqClusterReference:
+    name: {{ cluster_ref_name }}
+    namespace: {{k8s_namespace}}

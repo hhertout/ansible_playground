@@ -1,0 +1,2 @@
+k8s_namespace: rabbitmq
+cluster_ref: definition

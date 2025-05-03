@@ -1,0 +1,15 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: {{ cluster_ref }}
+spec:
+  replicas: {{ replicas | default(2) }}
+  service:
+    type: NodePort
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi
+    limits:
+      cpu: 300m
+      memory: 200Mi

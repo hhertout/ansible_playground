@@ -1,0 +1,4 @@
+queue_name: test2
+
+cluster_ref_name: definition
+k8s_namespace: rabbitmq
