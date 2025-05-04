@@ -1,0 +1,12 @@
+subscription_id =
+
+app_name          = 
+app_https_only    =
+docker_image_name = 
+enable_ci         =
+
+tags = {
+  env  = "dev"
+  zone = "fra"
+}
+
