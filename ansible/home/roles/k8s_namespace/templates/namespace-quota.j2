@@ -12,8 +12,8 @@ spec:
     pods: "{{limit_pods}}"
     services.nodeports: "0"
     services.loadbalancers: "0"
-    persistentvolumeclaims: "5"
+    persistentvolumeclaims: "10"
     requests.storage: "{{requests_storage}}"
     count/daemonsets.apps: 0
     count/daemonsets.extensions: 0
-    count/jobs.batch: 0
+    count/jobs.batch: {{job_batch_limit}}
