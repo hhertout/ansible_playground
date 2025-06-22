@@ -1,0 +1,16 @@
+namespaces = [
+  {
+    name = "example"
+    user = "example"
+    quota = {
+      limit_cpu      = "8"
+      limit_memory   = "8Gi"
+      request_cpu    = "4"
+      request_memory = "4Gi"
+      limit_storage  = "5Gi"
+      pvc            = "5"
+      pods           = "20"
+    }
+    limit_range = {}
+  }
+]
