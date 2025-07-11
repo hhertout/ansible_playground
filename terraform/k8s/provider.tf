@@ -9,10 +9,16 @@ terraform {
 
 provider "helm" {
   kubernetes = {
-    config_path = "~/.kube/home_cluster.yml"
+    host                   = var.cluster_endpoint
+    client_certificate     = base64decode(var.cluster_client_certificate)
+    client_key             = base64decode(var.cluster_client_key)
+    cluster_ca_certificate = base64decode(var.cluster_ca_certificate)
   }
 }
 
 provider "kubernetes" {
-  config_path = "~/.kube/home_cluter_admin.yml"
+  host                   = var.cluster_endpoint
+  client_certificate     = base64decode(var.cluster_client_certificate)
+  client_key             = base64decode(var.cluster_client_key)
+  cluster_ca_certificate = base64decode(var.cluster_ca_certificate)
 }

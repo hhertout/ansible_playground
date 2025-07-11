@@ -33,3 +33,26 @@ variable "cert_issuer_api_token" {
   type        = string
   sensitive   = true
 }
+
+variable "cluster_endpoint" {
+  description = "Endpoint of the Kubernetes cluster"
+  type        = string
+}
+
+variable "cluster_ca_certificate" {
+  description = "CA certificate for the Kubernetes cluster"
+  type        = string
+  sensitive   = true
+}
+
+variable "cluster_client_certificate" {
+  description = "Client certificate for the Kubernetes cluster"
+  type        = string
+  sensitive   = true
+}
+
+variable "cluster_client_key" {
+  description = "Client key for the Kubernetes cluster"
+  type        = string
+  sensitive   = true
+}
