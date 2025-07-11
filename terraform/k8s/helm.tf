@@ -1,7 +1,20 @@
 resource "helm_release" "example" {
-  name  = "my-local-chart"
-  chart = "./chart"
+  count = length(var.namespaces)
 
-  namespace        = "dsmfgbl0"
+  name  = "cert-issuer"
+  chart = "./cert_issuer"
+
+  namespace        = var.namespaces[count.index].name
   create_namespace = false
+
+  set = [
+    {
+      name  = "secrets.email"
+      value = var.cert_issuer_email
+    },
+    {
+      name  = "secrets.api_token"
+      value = var.cert_issuer_api_token
+    }
+  ]
 }

@@ -14,3 +14,6 @@ namespaces = [
     limit_range = {}
   }
 ]
+
+cert_issuer_email     = ""
+cert_issuer_api_token = ""

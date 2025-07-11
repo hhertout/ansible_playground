@@ -21,3 +21,15 @@ variable "namespaces" {
   }))
   default = []
 }
+
+
+variable "cert_issuer_email" {
+  description = "Email for the certificate issuer"
+  type        = string
+}
+
+variable "cert_issuer_api_token" {
+  description = "API token for the certificate issuer"
+  type        = string
+  sensitive   = true
+}
