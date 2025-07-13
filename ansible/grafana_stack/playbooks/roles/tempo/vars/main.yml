@@ -14,8 +14,6 @@ tempo:
         protocol: TCP
         exposed_port: 3200
         name: grpc
-    args:
-      - value: "-config.file=/etc/tempo.yaml"
   volume:
     config:
       name: tempo-config

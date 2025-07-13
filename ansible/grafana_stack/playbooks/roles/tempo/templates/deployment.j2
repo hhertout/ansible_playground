@@ -22,9 +22,7 @@ spec:
               name: {{ port.name }}
             {% endfor %}
           args:
-            {% for arg in tempo.specs.args %}
-            - {{ arg.value }}
-            {% endfor %}
+            - -config.file=/etc/tempo.yaml
           env:
             - name: GOMEMLIMIT
               valueFrom:
@@ -43,13 +41,6 @@ spec:
               cpu: "50m"
               memory: "80Mi"
           imagePullPolicy: IfNotPresent
-          volumeMounts:
-            - name: {{ tempo.volume.config.name }}
-              mountPath: {{ tempo.volume.config.path }}
-              subPath: {{ tempo.volume.config.subPath }}
-            - name: {{ tempo.volume.override.name }}
-              mountPath: {{ tempo.volume.override.path }}
-              subPath: {{ tempo.volume.override.subPath }}
           livenessProbe:
             httpGet:
               path: /ready
@@ -68,6 +59,10 @@ spec:
             timeoutSeconds: 5
             failureThreshold: 3
             successThreshold: 1
+          volumeMounts:
+            - name: {{ tempo.volume.config.name }}
+              mountPath: {{ tempo.volume.config.path }}
+              subPath: {{ tempo.volume.config.subPath }}
       volumes:
         - name: {{ tempo.volume.config.name }}
           configMap:
