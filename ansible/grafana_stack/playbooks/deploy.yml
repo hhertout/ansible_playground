@@ -14,6 +14,10 @@
       cert_manager:
         issuer: letsencrypt-issuer
   tasks:
+    - name: Python kubernetes install
+      ansible.builtin.pip:
+        name: kubernetes
+        executable: pip3
     - name: Get ca_cert cluster file
       ansible.builtin.set_fact:
         ca_cert: "{{ lookup('file', './cert/cluster_cert.txt') }}"
