@@ -17,10 +17,10 @@ spec:
         - name: {{ tempo.specs.container_name }}
           image: {{ tempo.specs.image }}
           ports:
-            {% for port in tempo.specs.ports %}
-            - containerPort: {{ port.port }}
-              name: {{ port.name }}
-            {% endfor %}
+{% for port in tempo.specs.ports %}
+            - containerPort: {{port.port}}
+              name: {{port.name}}
+{% endfor %}
           args:
             - -config.file=/etc/tempo.yaml
           env:
