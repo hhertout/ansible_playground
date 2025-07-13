@@ -5,6 +5,7 @@ tls:
 pyroscope:
   name: pyroscope
   kind: StatefulSet
+  replicas: 1
   specs:
     container_name: pyroscope
     image: grafana/pyroscope:1.14.0
