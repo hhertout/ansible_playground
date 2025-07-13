@@ -4,7 +4,6 @@ resource "helm_release" "example" {
 
   namespace        = "robsgbl0"
   create_namespace = false
-  atomic           = true
 
   set = [
     {
