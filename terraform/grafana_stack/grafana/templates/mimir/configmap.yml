@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: {{ .Values.mimir.volume.config.configMap }}
+  labels:
+    app: {{ .Values.mimir.name }}
+data:
+  mimir.yaml: |
+    {{ .Values.mimir_config | nindent 4 }}

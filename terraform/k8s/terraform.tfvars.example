@@ -15,5 +15,7 @@ namespaces = [
   }
 ]
 
-cert_issuer_email     = ""
-cert_issuer_api_token = ""
+cluster_ca_certificate     =
+cluster_endpoint           =
+cluster_client_certificate =
+cluster_client_key         =

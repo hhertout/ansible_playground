@@ -1,0 +1,7 @@
+namespace_name             =
+cluster_ca_certificate     =
+cluster_endpoint           =
+cluster_client_certificate =
+cluster_client_key         =
+
+grafana_db_url =

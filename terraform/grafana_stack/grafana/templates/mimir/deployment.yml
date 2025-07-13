@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: {{ .Values.mimir.kind }}
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: {{.Values.mimir.name}}
+spec:
+  replicas: {{.Values.mimir.specs.replicas}}
+  selector:
+    matchLabels:
+      app: {{.Values.mimir.name}}
+  template:
+    metadata:
+      labels:
+        app: {{.Values.mimir.name}}
+    spec:
+      containers:
+        - name: {{.Values.mimir.specs.container_name}}
+          image: {{.Values.mimir.specs.image}}
+          ports:
+            - containerPort: {{.Values.mimir.specs.container_port}}
+          args: {{- range .Values.mimir.specs.args}}
+            - {{.value}}
+            {{- end}}
+          env:
+            - name: GOMEMLIMIT
+              valueFrom:
+                resourceFieldRef:
+                  resource: limits.memory
+                  divisor: 1Mi
+            - name: GOMAXPROCS
+              valueFrom:
+                resourceFieldRef:
+                  resource: limits.cpu
+          resources:
+            limits:
+              cpu: "1"
+              memory: "350Mi"
+            requests:
+              cpu: "400m"
+              memory: "150Mi"
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: 9009
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 9009
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 3
+            successThreshold: 1
+            failureThreshold: 3
+          volumeMounts:
+            - name: {{.Values.mimir.volume.config.name}}
+              mountPath: {{.Values.mimir.volume.config.path}}
+              subPath: {{.Values.mimir.volume.config.subPath}}
+      volumes:
+        - name: {{.Values.mimir.volume.config.name}}
+          configMap:
+            name: {{.Values.mimir.volume.config.configMap}}
