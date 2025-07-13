@@ -21,8 +21,6 @@
         src: "{{ lookup('file', '.kube/kubeconfig.yml') }}"
         dest: ".kube/kubeconfig_decrypt.yml"
         mode: '0644'
-        owner: "{{ ansible_user_id }}"
-        group: "{{ ansible_user_id }}"
 
   post_tasks:
     - name: Remove kubeconfig
