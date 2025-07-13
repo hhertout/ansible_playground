@@ -173,7 +173,7 @@ grafana:
   specs:
     replicas: 1
     container_name: grafana
-    image: grafana/grafana:latest
+    image: grafana/grafana:12.0.2
     container_port: 3000
     exposed_port: 3000
   volume:
@@ -201,7 +201,7 @@ loki:
   specs:
     replicas: 1
     container_name: loki
-    image: grafana/loki:3.4
+    image: grafana/loki:3.5
     container_port: 3100
     exposed_port: 3100
     args:
@@ -292,7 +292,7 @@ mimir:
   specs:
     replicas: 1
     container_name: mimir
-    image: grafana/mimir:2.15.1
+    image: grafana/mimir:2.16.1
     args:
       - value: -target=all
       - value: -config.expand-env=true
@@ -368,7 +368,7 @@ tempo:
   specs:
     replicas: 1
     container_name: tempo
-    image: grafana/tempo:2.7.1
+    image: grafana/tempo:2.8.1
     ports:
       - port: 3100
         protocol: TCP
@@ -485,7 +485,7 @@ pyroscope:
   kind: StatefulSet
   specs:
     container_name: pyroscope
-    image: grafana/pyroscope:1.8.0
+    image: grafana/pyroscope:1.14.0
     container_port: 4040
     exposed_port: 4040
   hpa:
