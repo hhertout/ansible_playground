@@ -1,6 +1,7 @@
 variable "grafana_db_url" {
   description = "The database URL for Grafana"
   type        = string
+  default     = ""
 }
 
 variable "namespace_name" {
@@ -16,12 +17,6 @@ variable "cluster_endpoint" {
 
 variable "cluster_ca_certificate" {
   description = "CA certificate for the Kubernetes cluster"
-  type        = string
-  sensitive   = true
-}
-
-variable "k8s_username" {
-  description = "Client username for the Kubernetes cluster"
   type        = string
   sensitive   = true
 }
