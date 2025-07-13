@@ -19,9 +19,9 @@ spec:
           ports:
             - containerPort: {{ mimir.specs.container_port }}
           args:
-            {%- for arg in mimir.specs.args %}
-            - {{ arg.value }}
-            {%- endfor %}
+{%- for arg in mimir.specs.args %}
+            - {{ arg }}
+{%- endfor %}
           env:
             - name: GOMEMLIMIT
               valueFrom:

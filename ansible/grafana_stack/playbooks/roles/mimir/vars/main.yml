@@ -6,9 +6,9 @@ mimir:
     container_name: mimir
     image: grafana/mimir:2.16.1
     args:
-      - value: -target=all
-      - value: -config.expand-env=true
-      - value: -config.file=/etc/mimir.yaml
+      - -target=all
+      - -config.expand-env=true
+      - -config.file=/etc/mimir.yaml
     container_port: 9009
     exposed_port: 9009
   volume:
