@@ -19,9 +19,9 @@ spec:
           ports:
             - containerPort: {{ mimir.specs.container_port }}
           args:
-{%- for arg in mimir.specs.args %}
-            - {{ arg }}
-{%- endfor %}
+            - -target=all
+            - -config.expand-env=true
+            - -config.file=/etc/mimir.yaml
           env:
             - name: GOMEMLIMIT
               valueFrom:
