@@ -4,7 +4,7 @@
   become: false
   gather_facts: false
   environment: 
-    K8S_AUTH_KUBECONFIG: ".kube/kubeconfig.yml"
+    K8S_AUTH_KUBECONFIG: ".kube/kubeconfig_decrypt.yml"
   vars:
     namespace: robsgbl0
     tls:
@@ -15,6 +15,20 @@
       ansible.builtin.pip:
         name: kubernetes
         executable: pip3
+    
+    - name: Copy kubeconfig
+      ansible.builtin.copy:
+        src: "{{ lookup('file', '.kube/kubeconfig.yml') }}"
+        dest: ".kube/kubeconfig_decrypt.yml"
+        mode: '0644'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_id }}"
+
+  post_tasks:
+    - name: Remove kubeconfig
+      ansible.builtin.file:
+        path: ".kube/kubeconfig_decrypt.yml"
+        state: absent
 
   roles:
     - role: alloy
