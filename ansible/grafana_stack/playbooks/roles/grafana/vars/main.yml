@@ -21,6 +21,7 @@ grafana:
     memory: 120
 
 grafana_provisioning:
+  name: grafana-provisioning
   volume:
     config:
       name: grafana-provisioning-conf
