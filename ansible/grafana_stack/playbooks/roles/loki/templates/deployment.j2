@@ -18,9 +18,8 @@ spec:
           image: {{loki.specs.image}}
           ports:
             - containerPort: {{loki.specs.container_port}}
-          args: {{- range loki.specs.args}}
-            - {{.value}}
-            {{- end}}
+          args:
+            - -config.file=/etc/loki.yaml
           env:
             - name: GOMEMLIMIT
               valueFrom:
