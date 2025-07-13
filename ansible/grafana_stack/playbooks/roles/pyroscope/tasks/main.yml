@@ -2,9 +2,11 @@
 - name: Apply deployment
   kubernetes.core.k8s:
     definition: "{{ lookup('template', 'deployment.j2') }}"
+    namespace: "{{ namespace }}"
     state: present
 
 - name: Apply service
   kubernetes.core.k8s:
     definition: "{{ lookup('template', 'service.j2') }}"
+    namespace: "{{ namespace }}"
     state: present

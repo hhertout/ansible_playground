@@ -6,29 +6,35 @@
 - name: Apply configmap
   kubernetes.core.k8s:
     definition: "{{ lookup('template', 'configmap.j2') }}"
+    namespace: "{{ namespace }}"
     state: present
 
 - name: Apply deployment
   kubernetes.core.k8s:
     definition: "{{ lookup('template', 'deployment.j2') }}"
+    namespace: "{{ namespace }}"
     state: present
 
 - name: Apply hpa
   kubernetes.core.k8s:
     definition: "{{ lookup('template', 'hpa.j2') }}"
+    namespace: "{{ namespace }}"
     state: present
 
 - name: Apply ingress http
   kubernetes.core.k8s:
     definition: "{{ lookup('template', 'ingress-http.j2') }}"
+    namespace: "{{ namespace }}"
     state: present
 
 - name: Apply ingress grpc
   kubernetes.core.k8s:
     definition: "{{ lookup('template', 'ingress-grpc.j2') }}"
+    namespace: "{{ namespace }}"
     state: present
 
 - name: Apply service
   kubernetes.core.k8s:
     definition: "{{ lookup('template', 'service.j2') }}"
+    namespace: "{{ namespace }}"
     state: present
