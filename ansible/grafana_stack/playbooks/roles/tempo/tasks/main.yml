@@ -2,7 +2,7 @@
 - name: Set tempo configuration from file
   ansible.builtin.set_fact:
     tempo_config: |
-      {{ lookup('file', 'files/tempo.yml') }}
+      {{ lookup('file', 'tempo.yml') }}
 
 - name: Apply configmap
   kubernetes.core.k8s:

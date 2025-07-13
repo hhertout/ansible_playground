@@ -2,7 +2,7 @@
 - name: Set mimir configuration from file
   ansible.builtin.set_fact:
     mimir_config: |
-      {{ lookup('file', 'files/mimir.yml') }}
+      {{ lookup('file', 'mimir.yml') }}
 
 - name: Apply configmap
   kubernetes.core.k8s:
