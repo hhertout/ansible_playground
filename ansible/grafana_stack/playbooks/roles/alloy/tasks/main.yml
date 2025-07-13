@@ -1,7 +1,7 @@
 - name: Set alloy configuration from file
   ansible.builtin.set_fact:
     alloy_config: |
-      {{ lookup('file', 'alloy_config.yaml') }}
+      {{ lookup('file', 'files/alloy_config.yaml') }}
 
 - name: Apply configmap
   kubernetes.core.k8s:

@@ -2,7 +2,7 @@
 - name: Set loki configuration from file
   ansible.builtin.set_fact:
     loki_config: |
-      {{ lookup('file', 'loki.yml') }}
+      {{ lookup('file', 'files/loki.yml') }}
 
 - name: Apply configmap
   kubernetes.core.k8s:
