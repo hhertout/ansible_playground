@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ namespace }}
+  name: {{ loki.volume.config.configMap }}
+  labels:
+    app: {{ loki.name }}
+data:
+  loki.yaml: |
+    {{ loki_config | indent(4) }}

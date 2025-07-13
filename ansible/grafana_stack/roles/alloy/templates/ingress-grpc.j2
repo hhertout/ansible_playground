@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: {{ namespace }}
+  name: {{ alloy.name }}-grpc-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/issuer: {{ tls.cert_manager.issuer }}
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "10"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+spec:
+  ingressClassName: nginx
+  tls:
+{% for host in alloy.ingress.grpc.hosts %}
+    - hosts:
+        - {{ host.host }}
+      secretName: {{ host.tls_secret_name }}
+{% endfor %}
+  rules: 
+{% for host in alloy.ingress.grpc.hosts %}
+    - host: {{ host.host }}
+      http:
+        paths:
+          - pathType: Prefix
+            path: {{ host.path }}
+            backend:
+              service:
+                name: {{ host.service_name }}
+                port:
+                  number: {{ host.port }}
+{% endfor %}

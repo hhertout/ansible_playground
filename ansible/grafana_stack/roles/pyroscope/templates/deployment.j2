@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: {{ pyroscope.kind }}
+metadata:
+  namespace: {{ namespace }}
+  name: {{pyroscope.name}}
+spec:
+  replicas: {{pyroscope.replicas}}
+  selector:
+    matchLabels:
+      app: {{pyroscope.name}}
+  template:
+    metadata:
+      labels:
+        app: {{pyroscope.name}}
+    spec:
+      containers:
+        - name: {{pyroscope.specs.container_name}}
+          image: {{pyroscope.specs.image}}
+          ports:
+            - containerPort: {{pyroscope.specs.container_port}}
+          resources:
+            limits:
+              cpu: "100m"
+              memory: "300Mi"
+            requests:
+              cpu: "50m"
+              memory: "80Mi"
+          imagePullPolicy: IfNotPresent

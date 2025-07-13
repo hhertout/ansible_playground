@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ namespace }}
+  name: {{ tempo.volume.config.configMap }}
+  labels:
+    app: {{ tempo.name }}
+data:
+  tempo.yaml: |
+    {{ tempo_config | indent(4) }}

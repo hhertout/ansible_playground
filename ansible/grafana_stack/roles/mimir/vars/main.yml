@@ -1,0 +1,24 @@
+mimir:
+  name: mimir
+  kind: StatefulSet
+  specs:
+    replicas: 1
+    container_name: mimir
+    image: grafana/mimir:2.16.1
+    args:
+      - value: -target=all
+      - value: -config.expand-env=true
+      - value: -config.file=/etc/mimir.yaml
+    container_port: 9009
+    exposed_port: 9009
+  volume:
+    config:
+      name: mimir-config
+      configMap: mimir-config
+      path: /etc/mimir.yaml
+      subPath: mimir.yaml
+  hpa:
+    min: 1
+    max: 1
+    cpu: 120
+    memory: 120

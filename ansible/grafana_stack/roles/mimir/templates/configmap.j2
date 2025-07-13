@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ namespace }}
+  name: {{ mimir.volume.config.configMap }}
+  labels:
+    app: {{ mimir.name }}
+data:
+  mimir.yaml: |
+    {{ mimir_config | indent(4) }}

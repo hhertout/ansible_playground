@@ -1,0 +1,51 @@
+alloy:
+  name: alloy
+  kind: Deployment
+  specs:
+    replicas: 1
+    container_name: alloy
+    image: grafana/alloy:v1.9.2
+    ports:
+      - port: 4317
+        protocol: TCP
+        exposed_port: 4317
+        name: grpc
+      - port: 4318
+        protocol: TCP
+        exposed_port: 4318
+        name: http
+      - port: 9999
+        protocol: TCP
+        exposed_port: 9999
+        name: pyroscope
+  volume:
+    config:
+      name: alloy-config
+      configMap: alloy-config
+      path: /etc/config.alloy
+      subPath: config.alloy
+  ingress:
+    http:
+      hosts:
+        - host: otel-http.neryolab.com
+          path: /
+          service_name: alloy-service
+          tls_secret_name: alloy-http-tls
+          port: 4318
+    grpc:
+      hosts:
+        - host: otel-grpc.neryolab.com
+          path: /
+          service_name: alloy-service
+          tls_secret_name: alloy-grpc-tls
+          port: 4317
+        - host: otel-pyroscope.neryolab.com
+          path: /
+          service_name: alloy-service
+          tls_secret_name: alloy-pyroscope-tls
+          port: 9999
+  hpa:
+    min: 1
+    max: 2
+    cpu: 120
+    memory: 120

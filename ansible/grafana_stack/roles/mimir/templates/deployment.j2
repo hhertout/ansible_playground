@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: {{ mimir.kind }}
+metadata:
+  namespace: {{ namespace }}
+  name: {{ mimir.name }}
+spec:
+  replicas: {{ mimir.specs.replicas }}
+  selector:
+    matchLabels:
+      app: {{ mimir.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ mimir.name }}
+    spec:
+      containers:
+        - name: {{ mimir.specs.container_name }}
+          image: {{ mimir.specs.image }}
+          ports:
+            - containerPort: {{ mimir.specs.container_port }}
+          args:
+            {%- for arg in mimir.specs.args %}
+            - {{ arg.value }}
+            {%- endfor %}
+          env:
+            - name: GOMEMLIMIT
+              valueFrom:
+                resourceFieldRef:
+                  resource: limits.memory
+                  divisor: 1Mi
+            - name: GOMAXPROCS
+              valueFrom:
+                resourceFieldRef:
+                  resource: limits.cpu
+          resources:
+            limits:
+              cpu: "1"
+              memory: "350Mi"
+            requests:
+              cpu: "400m"
+              memory: "150Mi"
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: 9009
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 9009
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 3
+            successThreshold: 1
+            failureThreshold: 3
+          volumeMounts:
+            - name: {{ mimir.volume.config.name }}
+              mountPath: {{ mimir.volume.config.path }}
+              subPath: {{ mimir.volume.config.subPath }}
+      volumes:
+        - name: {{ mimir.volume.config.name }}
+          configMap:
+            name: {{ mimir.volume.config.configMap }}

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ namespace }}
+  name: {{ alloy.volume.config.configMap }}
+  labels:
+    app: {{ alloy.name }}
+data:
+  config.alloy: |
+{{ alloy_config | indent(4, True) }}

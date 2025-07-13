@@ -1,0 +1,20 @@
+---
+- name: Set loki configuration from file
+  ansible.builtin.set_fact:
+    loki_config: |
+      {{ lookup('file', 'loki.yml') }}
+
+- name: Apply configmap
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'configmap.j2') }}"
+    state: present
+
+- name: Apply deployment
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'deployment.j2') }}"
+    state: present
+
+- name: Apply service
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'service.j2') }}"
+    state: present

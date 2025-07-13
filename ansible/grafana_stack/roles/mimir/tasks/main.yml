@@ -1,0 +1,20 @@
+---
+- name: Set mimir configuration from file
+  ansible.builtin.set_fact:
+    mimir_config: |
+      {{ lookup('file', 'mimir.yml') }}
+
+- name: Apply configmap
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'configmap.j2') }}"
+    state: present
+
+- name: Apply deployment
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'deployment.j2') }}"
+    state: present
+
+- name: Apply service
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'service.j2') }}"
+    state: present

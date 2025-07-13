@@ -1,0 +1,36 @@
+---
+- name: Apply configmap
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'configmap-provisioning.j2') }}"
+    state: present
+
+- name: Apply deployment
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'deployment.j2') }}"
+    state: present
+
+- name: Apply hpa
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'hpa.j2') }}"
+    state: present
+
+- name: Apply ingress
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'ingress.j2') }}"
+    state: present
+
+- name: Apply pvc
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'pvc.j2') }}"
+    state: present
+
+- name: Apply secrets
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'secrets.j2') }}"
+    state: present
+
+- name: Apply service
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'service.j2') }}"
+    state: present
+

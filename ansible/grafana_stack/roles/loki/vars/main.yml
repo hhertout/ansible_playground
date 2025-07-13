@@ -1,0 +1,22 @@
+loki:
+  name: loki
+  kind: StatefulSet
+  specs:
+    replicas: 1
+    container_name: loki
+    image: grafana/loki:3.5
+    container_port: 3100
+    exposed_port: 3100
+    args:
+      - value: "-config.file=/etc/loki.yaml"
+  volume:
+    config:
+      name: loki-config
+      configMap: loki-config
+      path: /etc/loki.yaml
+      subPath: loki.yaml
+  hpa:
+    min: 1
+    max: 1
+    cpu: 120
+    memory: 120

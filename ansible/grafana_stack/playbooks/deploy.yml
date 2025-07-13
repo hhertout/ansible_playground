@@ -1,0 +1,27 @@
+---
+- hosts: localhost
+  connection: local
+  become: false
+  gather_facts: false
+  vars:
+    k8s_auth:
+      host: "{{ k8s_host }}"
+      api_key: "{{ k8s_token }}"
+      verify_ssl: true
+      ca_cert: "{{ lookup('file', 'ca.crt') }}"
+    namespace: robsgbl0
+    tls:
+      cert_manager:
+        issuer: letsencrypt-issuer
+  tasks:
+    - name: Get ca_cert cluster file
+      ansible.builtin.set_fact:
+        ca_cert: "{{ lookup('file', './cert/cluster_cert.txt') }}"
+
+  roles:
+    - role: alloy
+    - role: mimir
+    - role: loki
+    - role: tempo
+    - role: pyroscope
+    - role: grafana

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ namespace }}
+  name: {{ tempo.name }}-service
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ tempo.name }}
+  ports:
+{% for port in tempo.specs.ports %}
+    - protocol: {{ port.protocol }}
+      port: {{ port.exposed_port }}
+      targetPort: {{ port.port }}
+      name: {{ port.name }}
+{% endfor %}

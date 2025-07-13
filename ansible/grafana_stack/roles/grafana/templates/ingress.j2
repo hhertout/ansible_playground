@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: {{ namespace }}
+  name: {{grafana.name}}-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/issuer: {{tls.cert_manager.issuer}}
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - {{grafana.ingress.host}}
+    secretName: {{grafana.name}}-tls
+  rules:
+    - host: {{grafana.ingress.host}}
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: {{grafana.name}}-service
+                port:
+                  number: {{ grafana.specs.exposed_port }}

@@ -1,0 +1,34 @@
+- name: Set alloy configuration from file
+  ansible.builtin.set_fact:
+    alloy_config: |
+      {{ lookup('file', 'alloy_config.yaml') }}
+
+- name: Apply configmap
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'configmap.j2') }}"
+    state: present
+
+- name: Apply deployment
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'deployment.j2') }}"
+    state: present
+
+- name: Apply hpa
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'hpa.j2') }}"
+    state: present
+
+- name: Apply ingress http
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'ingress-http.j2') }}"
+    state: present
+
+- name: Apply ingress grpc
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'ingress-grpc.j2') }}"
+    state: present
+
+- name: Apply service
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'service.j2') }}"
+    state: present

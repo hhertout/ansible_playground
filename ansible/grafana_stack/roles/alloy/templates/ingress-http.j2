@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: {{ namespace }}
+  name: {{ alloy.name }}-http-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/issuer: {{ tls.cert_manager.issuer }}
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+spec:
+  ingressClassName: nginx
+  tls:
+{% for host in alloy.ingress.http.hosts %}
+    - hosts:
+        - {{ host.host }}
+      secretName: {{ host.tls_secret_name }}
+{% endfor %}
+  rules: 
+{% for host in alloy.ingress.http.hosts %}
+    - host: {{ host.host }}
+      http:
+        paths:
+          - pathType: Prefix
+            path: {{ host.path }}
+            backend:
+              service:
+                name: {{ host.service_name }}
+                port:
+                  number: {{ host.port }}
+{% endfor %}

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ namespace }}
+  name: {{ grafana.name }}-service
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ grafana.name }}
+  ports:
+    - protocol: TCP
+      port: {{ grafana.specs.exposed_port }}
+      targetPort: {{ grafana.specs.container_port }}

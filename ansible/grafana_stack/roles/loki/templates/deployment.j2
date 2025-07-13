@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: {{ loki.kind }}
+metadata:
+  namespace: {{ namespace }}
+  name: {{loki.name}}
+spec:
+  replicas: {{loki.specs.replicas}}
+  selector:
+    matchLabels:
+      app: {{loki.name}}
+  template:
+    metadata:
+      labels:
+        app: {{loki.name}}
+    spec:
+      containers:
+        - name: {{loki.specs.container_name}}
+          image: {{loki.specs.image}}
+          ports:
+            - containerPort: {{loki.specs.container_port}}
+          args: {{- range loki.specs.args}}
+            - {{.value}}
+            {{- end}}
+          env:
+            - name: GOMEMLIMIT
+              valueFrom:
+                resourceFieldRef:
+                  resource: limits.memory
+                  divisor: 1Mi
+            - name: GOMAXPROCS
+              valueFrom:
+                resourceFieldRef:
+                  resource: limits.cpu
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "300Mi"
+            requests:
+              cpu: "120m"
+              memory: "80Mi"
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: {{loki.volume.config.name}}
+              mountPath: {{loki.volume.config.path}}
+              subPath: {{loki.volume.config.subPath}}
+      volumes:
+        - name: {{loki.volume.config.name}}
+          configMap:
+            name: {{loki.volume.config.configMap}}

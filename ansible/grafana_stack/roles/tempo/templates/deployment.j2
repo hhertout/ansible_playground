@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: {{ tempo.kind }}
+metadata:
+  namespace: {{ namespace }}
+  name: {{ tempo.name }}
+spec:
+  replicas: {{ tempo.specs.replicas }}
+  selector:
+    matchLabels:
+      app: {{ tempo.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ tempo.name }}
+    spec:
+      containers:
+        - name: {{ tempo.specs.container_name }}
+          image: {{ tempo.specs.image }}
+          ports:
+            {% for port in tempo.specs.ports %}
+            - containerPort: {{ port.port }}
+              name: {{ port.name }}
+            {% endfor %}
+          args:
+            {% for arg in tempo.specs.args %}
+            - {{ arg.value }}
+            {% endfor %}
+          env:
+            - name: GOMEMLIMIT
+              valueFrom:
+                resourceFieldRef:
+                  resource: limits.memory
+                  divisor: 1Mi
+            - name: GOMAXPROCS
+              valueFrom:
+                resourceFieldRef:
+                  resource: limits.cpu
+          resources:
+            limits:
+              cpu: "100m"
+              memory: "300Mi"
+            requests:
+              cpu: "50m"
+              memory: "80Mi"
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: {{ tempo.volume.config.name }}
+              mountPath: {{ tempo.volume.config.path }}
+              subPath: {{ tempo.volume.config.subPath }}
+            - name: {{ tempo.volume.override.name }}
+              mountPath: {{ tempo.volume.override.path }}
+              subPath: {{ tempo.volume.override.subPath }}
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: 3100
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+            successThreshold: 1
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 3100
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+            successThreshold: 1
+      volumes:
+        - name: {{ tempo.volume.config.name }}
+          configMap:
+            name: {{ tempo.volume.config.configMap }}

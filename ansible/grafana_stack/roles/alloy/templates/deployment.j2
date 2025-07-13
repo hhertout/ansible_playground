@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: {{  alloy.kind }}
+metadata:
+  namespace: {{  namespace }}
+  name: {{ alloy.name}}
+spec:
+  replicas: {{ alloy.specs.replicas}}
+  selector:
+    matchLabels:
+      app: {{ alloy.name}}
+  template:
+    metadata:
+      labels:
+        app: {{ alloy.name}}
+    spec:
+      containers:
+        - name: {{ alloy.specs.container_name}}
+          image: {{ alloy.specs.image}}
+          imagePullPolicy: IfNotPresent
+          ports: 
+{% for port in alloy.specs.ports %}
+            - containerPort: {{port.port}}
+              name: {{port.name}}
+{% endfor %}
+          command:
+            - alloy
+            - run
+            - --stability.level=public-preview
+            - /etc/config.alloy
+          env:
+            - name: GOMEMLIMIT
+              valueFrom:
+                resourceFieldRef:
+                  resource: limits.memory
+                  divisor: 1Mi
+            - name: GOMAXPROCS
+              valueFrom:
+                resourceFieldRef:
+                  resource: limits.cpu
+          resources:
+            limits:
+              cpu: "800m"
+              memory: "300Mi"
+            requests:
+              cpu: "350m"
+              memory: "80Mi"
+          volumeMounts:
+            - name: {{ alloy.volume.config.name}}
+              mountPath: {{ alloy.volume.config.path}}
+              subPath: {{ alloy.volume.config.subPath}}
+      volumes:
+        - name: {{ alloy.volume.config.name}}
+          configMap:
+            name: {{ alloy.volume.config.configMap}}
