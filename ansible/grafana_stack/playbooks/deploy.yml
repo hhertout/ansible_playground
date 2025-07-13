@@ -4,9 +4,7 @@
   become: false
   gather_facts: false
   environment: 
-    K8S_AUTH_SSL_CA_CERT: "cert/ca.crt"
-    K8S_AUTH_HOST: "{{ k8s_host }}"
-    K8S_AUTH_API_KEY: "{{ k8s_token }}"
+    K8S_AUTH_KUBECONFIG: ".kube/kubeconfig.yml"
   vars:
     namespace: robsgbl0
     tls:
