@@ -1,6 +1,7 @@
 grafana:
   name: grafana
   kind: Deployment
+  secret_name: grafana-secret
   secrets:
     db_url: ""
   specs:
