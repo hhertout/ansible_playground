@@ -18,7 +18,7 @@
     
     - name: Copy kubeconfig
       ansible.builtin.copy:
-        src: "{{ lookup('file', '.kube/kubeconfig.yml') }}"
+        content: "{{ lookup('file', '.kube/kubeconfig.yml') }}"
         dest: ".kube/kubeconfig_decrypt.yml"
         mode: '0644'
 
