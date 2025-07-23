@@ -18,6 +18,10 @@ alloy:
         protocol: TCP
         exposed_port: 9999
         name: pyroscope
+      - port: 12345
+        protocol: TCP
+        exposed_port: 12345
+        name: alloy-admin
   volume:
     config:
       name: alloy-config
@@ -32,6 +36,11 @@ alloy:
           service_name: alloy-service
           tls_secret_name: alloy-http-tls
           port: 4318
+        - host: alloy.neryolab.com
+          path: /
+          service_name: alloy-service
+          tls_secret_name: alloy-tls
+          port: 12345
         - host: otel-pyroscope.neryolab.com
           path: /
           service_name: alloy-service
