@@ -9,11 +9,19 @@ tempo:
       - port: 3100
         protocol: TCP
         exposed_port: 3100
-        name: http
+        name: server-http
+      - port: 3200
+        protocol: TCP
+        exposed_port: 3200
+        name: server-grpc
       - port: 4317
         protocol: TCP
         exposed_port: 4317
         name: grpc
+      - port: 4318
+        protocol: TCP
+        exposed_port: 4318
+        name: http
   volume:
     config:
       name: tempo-config
