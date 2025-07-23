@@ -10,9 +10,9 @@ tempo:
         protocol: TCP
         exposed_port: 3100
         name: http
-      - port: 3200
+      - port: 4317
         protocol: TCP
-        exposed_port: 3200
+        exposed_port: 4317
         name: grpc
   volume:
     config:
