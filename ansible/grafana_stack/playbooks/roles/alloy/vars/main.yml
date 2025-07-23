@@ -32,6 +32,11 @@ alloy:
           service_name: alloy-service
           tls_secret_name: alloy-http-tls
           port: 4318
+        - host: otel-pyroscope.neryolab.com
+          path: /
+          service_name: alloy-service
+          tls_secret_name: alloy-pyroscope-tls
+          port: 9999
     grpc:
       hosts:
         - host: otel-grpc.neryolab.com
@@ -39,11 +44,6 @@ alloy:
           service_name: alloy-service
           tls_secret_name: alloy-grpc-tls
           port: 4317
-        - host: otel-pyroscope.neryolab.com
-          path: /
-          service_name: alloy-service
-          tls_secret_name: alloy-pyroscope-tls
-          port: 9999
   hpa:
     min: 1
     max: 2
